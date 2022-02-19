@@ -1,23 +1,18 @@
 {
-  "name": "discord-virtual-assistant",
+  "name": "olddiscord",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified yet\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/builders": "^0.12.0",
-    "@discordjs/rest": "^0.3.0",
+    "@discordjs/opus": "^0.5.3",
     "@discordjs/voice": "^0.8.0",
-    "discord-api-types": "^0.27.1",
-    "discord.js": "^13.6.0",
+    "discord.js": "12.5.3",
     "libsodium-wrappers": "^0.7.9"
-  },
-  "devDependencies": {
-    "eslint": "^8.9.0"
   }
 }

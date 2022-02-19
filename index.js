@@ -1,40 +1,29 @@
-// Require the necessary discord.js classes
-const { Client, Intents } = require('discord.js');
-const { joinVoiceChannel } = require('@discordjs/voice');
-const { token } = require('./config.json');
+/**
+ @Project:Discord Virtual Assistant
+ @Title: index.js
+ @Authors: Ian Sodersjerna, Jacob Austin, Jonathan Tucker, Nick Miceli
+ @Created: 2/19/2022
+ @Description: Main file for program.
 
-let connection;
+ @Changelog:
+ 2/19/2022 IS:Added import statements and basic operation.
+ */
+const DiscordHandler = require("./src/discord")
+const Parser = require("./src/parser")
+const S2T = require("./src/s2t")
 
-// Create a new client instance
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const discordclient = new DiscordHandler();
+const parser = new Parser(discordclient);
+const speech2text = new S2T();
 
-// When the client is ready, run this code (only once)
-client.once('ready', () => {
-	console.log('Ready!');
-});
 
-client.on('interactionCreate', async interaction => {
-	if (!interaction.isCommand()) return;
-
-	if (interaction.commandName === 'ping') {
-		await interaction.reply('Pong!!');
-	}
-	if (interaction.commandName === 'join') {
-		await interaction.reply('joining');
-		const channel = interaction.member.voice.channel;
-		connection = joinVoiceChannel({
-			channelId: channel.id,
-			guildId: channel.guild.id,
-			adapterCreator: channel.guild.voiceAdapterCreator,
-		});
-		console.log(connection);
-	}
-	if (interaction.commandName === 'leave') {
-		connection.destroy();
-	}
-});
-
-// Login to Discord with your client's token
-client.login(token)
-	.then(() => console.log('App starting'))
-	.catch(console.error);
+let cont = false;
+while (cont) {
+    // if the discord client has audio ready to process
+    if (discordclient.audio_ready) {
+        // transcribe the audio using the speech to text module
+        let transcript = speech2text.transcribe(discordclient.audio_clip);
+        // Parse the transcript and preform actions
+        let status = parser.parse(transcript)
+    }
+}
