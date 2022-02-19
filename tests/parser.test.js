@@ -8,6 +8,13 @@
  @Changelog:
  */
 const Parser = require("../src/parser")
+const DiscordHandler = require("../src/discord");
 /*
 Tests for parser module will go here
  */
+test('Discord constructor', () => {
+    const discordclient = new DiscordHandler();
+    expect(discordclient).toBeDefined();
+    const parser = new Parser(discordclient);
+    expect(parser).toBeDefined();
+});

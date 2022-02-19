@@ -11,3 +11,8 @@ const S2T = require("../src/s2t")
 /*
 Tests for speech to text module will go here
  */
+
+test('Discord constructor', () => {
+    const speech2text = new S2T();
+    expect(speech2text).toBeDefined();
+});

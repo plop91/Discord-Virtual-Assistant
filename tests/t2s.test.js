@@ -11,3 +11,8 @@ const T2S = require("../src/t2s")
 /*
 Tests for text to speech module will go here
  */
+
+test('Discord constructor', () => {
+    let text2speech = new T2S();
+    expect(text2speech).toBeDefined();
+});

@@ -11,3 +11,8 @@ const DiscordHandler = require("../src/discord")
 /*
 Tests for discord module will go here
  */
+
+test('Discord constructor', () => {
+    const discordclient = new DiscordHandler();
+    expect(discordclient).toBeDefined();
+});
