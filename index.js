@@ -11,8 +11,15 @@
 const DiscordHandler = require("./src/discord")
 const Parser = require("./src/parser")
 const S2T = require("./src/s2t")
-
-const discordclient = new DiscordHandler();
+let discord_token;
+try {
+    const {token} = require('./config.json');
+    discord_token = token
+}catch (ex){
+    require('dotenv').config();
+    discord_token = process.env.TOKEN
+}
+const discordclient = new DiscordHandler(discord_token);
 const parser = new Parser(discordclient);
 const speech2text = new S2T();
 

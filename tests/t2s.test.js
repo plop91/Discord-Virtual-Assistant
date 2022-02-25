@@ -3,9 +3,10 @@
  @Title: t2s_test.js
  @Authors: Ian Sodersjerna, Jacob Austin, Jonathan Tucker, Nick Miceli
  @Created: 2/19/2022
- @Description:  Interface with Text-to-Speech API
+ @Description: Unit testing for Text-to-Speech interface.
 
  @Changelog:
+ 2/19/2022 IS:Added constructor test
  */
 const T2S = require("../src/t2s")
 /*

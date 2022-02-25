@@ -1,5 +1,5 @@
 # Discord-Virtual-Assistant
-##Authors:
+## Authors
 * Ian Sodersjerna - @plop91
 * Jacob Austin - @jacob-austin
 * Jonathan Tucker - @JTucker2000

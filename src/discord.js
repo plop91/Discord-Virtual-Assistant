@@ -11,10 +11,10 @@
 
 const Discord = require('discord.js');
 const fs = require('fs');
-const { token } = require('../config.json');
 
 class DiscordHandlerGeneric{
-    constructor() {
+    constructor(token) {
+        this.token = token;
     }
     get audio_clip(){
         // return loaded audio clip
@@ -23,8 +23,8 @@ class DiscordHandlerGeneric{
 }
 
 class DiscordHandler extends DiscordHandlerGeneric{
-    constructor() {
-        super();
+    constructor(token) {
+        super(token);
         // Discord API client object
         this.client = new Discord.Client();
         // voice connection defaulted to null
@@ -63,7 +63,7 @@ class DiscordHandler extends DiscordHandlerGeneric{
             console.log('Ready!');
         });
 
-        this.client.login(token);
+        this.client.login(this.token);
     }
 
     get audio_clip(){
@@ -71,6 +71,7 @@ class DiscordHandler extends DiscordHandlerGeneric{
         return null
     }
 }
+
 class DiscordHandlerTest extends DiscordHandlerGeneric{
     constructor() {
         super();
