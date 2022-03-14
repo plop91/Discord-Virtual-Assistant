@@ -8,6 +8,10 @@
  @Changelog:
 2/19/2022 IS: added basic structure
  */
+
+const speech = require('@google-cloud/speech');
+const fs = require('fs');
+
 class S2TGeneric{
     transcribe(audio){
         return null
