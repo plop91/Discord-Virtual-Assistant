@@ -6,7 +6,11 @@
   "scripts": {
     "test": "jest"
   },
-  "keywords": ["Discord", "Bot", "Virtual Assistant"],
+  "keywords": [
+    "Discord",
+    "Bot",
+    "Virtual Assistant"
+  ],
   "authors": [
     "Ian Sodersjerna - @plop91",
     "Jacob Austin - @jacob-austin",
@@ -17,6 +21,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.5.3",
     "@discordjs/voice": "^0.8.0",
+    "@google-cloud/speech": "^4.10.0",
     "discord.js": "12.5.3",
     "dotenv": "^16.0.0",
     "@google-cloud/text-to-speech": "^3.4.0",
