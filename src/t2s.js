@@ -6,6 +6,7 @@
  @Description:  Interface with Text-to-Speech API
 
  @Changelog:
+3/15/2022 NM: implemented convert method
 2/19/2022 IS: added basic structure
  */
 const textToSpeech = require('@google-cloud/text-to-speech');
