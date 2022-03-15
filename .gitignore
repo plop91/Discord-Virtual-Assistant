@@ -134,5 +134,6 @@ dmypy.json
 # Node.js
 node_modules/
 
+response.mp3
 config.json
 db/

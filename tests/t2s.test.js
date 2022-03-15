@@ -8,12 +8,14 @@
  @Changelog:
  2/19/2022 IS:Added constructor test
  */
-const T2S = require("../src/t2s")
+const T2S = require('../src/t2s');
 /*
 Tests for text to speech module will go here
  */
 
+// eslint-disable-next-line no-undef
 test('Discord constructor', () => {
-    let text2speech = new T2S();
-    expect(text2speech).toBeDefined();
+	const text2speech = new T2S();
+	// eslint-disable-next-line no-undef
+	expect(text2speech).toBeDefined();
 });
