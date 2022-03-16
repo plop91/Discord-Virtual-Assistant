@@ -6,13 +6,14 @@
  @Description: Interface with discord API
 
  @Changelog:
+ 3/16/2022 IS: Update database to mariaDB
  2/08/2022 IS: Add sqlite3 database with temp test function.
  2/25/2022 IS: Made token a parameter and moved config import to index.js
  2/19/2022 IS: Added basic structure, added basic message handler with basic audio channel join and record functions
  */
 
 const Discord = require('discord.js');
-const sqlite3 = require('sqlite3').verbose();
+const mariadb = require('mariadb');
 const fs = require('fs');
 
 /**
@@ -27,37 +28,28 @@ class DiscordHandlerGeneric {
 		this.audio_ready = false;
 		this.audio_queue = [];
 
-		// Check if database directory exists, if not create it
-		fs.access('./db', function(error) {
-			if (error) {
-				fs.mkdirSync('./db');
-			}
+		this.pool = mariadb.createPool({
+			// process.env.TOKEN
+			host: process.env.DVA_DATABASE_HOST,
+			user:process.env.DVA_DATABASE_USER,
+			password: process.env.DVA_DATABASE_PASSWORD,
+			connectionLimit: 5,
 		});
 
-
-		// Create database object
-		this.db = new sqlite3.Database('./db/discord.db', (err) => {
-			if (err) {
-				console.error(err.message);
-				throw Error;
-			}
-			else {
-				console.log('Connected to the discord database.');
-			}
-		});
-
-
-		const query = 'CREATE TABLE IF NOT EXISTS recent_active_server (user char, server int);';
-
-		this.db.run(query, (err) => {
-			if (err) {
-				console.error(err.message);
-				throw Error;
-			}
-			else {
-				console.log('Checked local tables');
-			}
-		});
+		this.pool.getConnection()
+			.then (conn => {
+				// create the database if it does not exist should only occur when changing databases.
+				conn.query('CREATE DATABASE IF NOT EXISTS dva');
+				// change into dva database
+				conn.query('USE dva');
+				// create last_seen table if it does not exist
+				return conn.query('CREATE TABLE IF NOT EXISTS last_seen (username CHAR(100) PRIMARY KEY, server CHAR(20))');
+			})
+			.then((res) => {
+				console.log(res);
+			}).catch(err => {
+				console.log(err);
+			});
 
 	}
 
@@ -104,13 +96,20 @@ class DiscordHandler extends DiscordHandlerGeneric {
 		this.client.on('message', async message => {
 
 			console.log(message.author.username + ': ' + message.content);
-			this.db.run('INSERT INTO recent_active_server(user) VALUES(?), (?)', message.author.username, message.guild.id, function(err) {
-				if (err) {
-					return console.log(err.message);
-				}
-				// get the last insert id
-				console.log(`A row has been inserted with rowid ${this.lastID}`);
-			});
+			// If the bot sent the message we can ignore the rest.
+			if (message.author.bot) return;
+
+			this.pool.getConnection()
+				.then (conn => {
+					conn.query('USE dva');
+					return conn.query('REPLACE INTO last_seen VALUES (?, ?)', [message.author.username, message.guild.id]);
+				})
+				.then((res) => {
+					console.log(res);
+				})
+				.catch(err => {
+					console.log(err);
+				});
 
 			if (message.content === 'join') {
 				// Join the same voice channel of the author of the message
@@ -122,6 +121,7 @@ class DiscordHandler extends DiscordHandlerGeneric {
 				}
 			}
 			else if (message.content === 'record') {
+				message.channel.send('Recording starting now');
 				if (!this.connection) {
 					if (message.member.voice.channel) {
 						this.connection = await message.member.voice.channel.join();
@@ -134,25 +134,30 @@ class DiscordHandler extends DiscordHandlerGeneric {
 				// create a recorder object
 				const audio = this.connection.receiver.createStream(message.author, { mode: 'pcm' });
 				// save audio stream, refer to https://v12.discordjs.guide/voice/receiving-audio.html#basic-usage for playback information
-				audio.pipe(fs.createWriteStream(message.id));
-				this.audio_queue.push(message.id);
-				this.audio_ready = true;
+				if (!fs.existsSync('recordings')) {
+					fs.mkdirSync('recordings');
+				}
+				const writer = fs.createWriteStream('recordings/' + message.id);
+				audio.pipe(writer);
+				writer.on('finish', () => {
+					this.audio_queue.push(message.id);
+					this.audio_ready = true;
+					message.channel.send('Recording finished');
+				});
 
 			}
 			else if (message.content === 'test') {
-				const query = 'SELECT DISTINCT User user FROM recent_active_server ORDER BY user';
-				this.db.all(query, (err, rows) => {
-					if (err) {
-						console.error(err.message);
-						throw Error;
-					}
-					else {
-						console.log('looked into local database');
-						rows.forEach((row) => {
-							console.log(row);
-						});
-					}
-				});
+				this.pool.getConnection()
+					.then (conn => {
+						conn.query('USE dva');
+						return conn.query('SELECT * FROM last_seen');
+					})
+					.then((res) => {
+						console.log(res);
+					})
+					.catch(err => {
+						console.log(err);
+					});
 			}
 		});
 
@@ -165,16 +170,12 @@ class DiscordHandler extends DiscordHandlerGeneric {
 		this.client.login(this.token);
 	}
 
-
-	send_dm(user, message) {
-
-	}
-
 }
 
 /**
  * Testing Discord Bot Handler class
  */
+// eslint-disable-next-line no-unused-vars
 class DiscordHandlerTest extends DiscordHandlerGeneric {
 	constructor() {
 		super();
