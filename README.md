@@ -5,6 +5,44 @@
 * Jonathan Tucker - @JTucker2000
 * Nick Miceli - @nickmiceli4
 
+## Instructions
+
+### Installation:
+Discord Virtual Assistant requires node.js in order to run, if you do not have node.js installed follow [these instructions][1] first then complete these steps
+
+1. Download code to "DISCORD_VIRTUAL_ASSISTANT_DIR" (replace "DISCORD_VIRTUAL_ASSISTANT_DIR" with desired folder name)
+```shell
+git clone https://github.com/plop91/Discord-Virtual-Assistant.git DISCORD_VIRTUAL_ASSISTANT_DIR
+```
+2. Change to downloaded directory
+```shell
+cd DISCORD_VIRTUAL_ASSISTANT_DIR
+```
+3. Install dependencies
+```shell
+npm install
+```
+
+### Usage:
+1. Change to downloaded directory
+```shell
+cd DISCORD_VIRTUAL_ASSISTANT_DIR
+```
+2. Start the node application
+```shell
+npm start
+```
+
+### Testing:
+1. Change to downloaded directory
+```shell
+cd DISCORD_VIRTUAL_ASSISTANT_DIR
+```
+2. Start the tests for the node application
+```shell
+npm test
+```
+
 ## Objectives
 
 This project seeks to solve that Discord currently lacks any built-in virtual assistant to help users with their daily interactions with the app; therefore, the objective for Discord Virtual Assistant is to create a Discord bot that users can interact with similarly to how people interact with Google Home or Amazon Alexa. Users of our Discord Virtual Assistant will communicate with it through a voice channel within a Discord Server. The bot will perform a task based on what is asked of it and reply back through the voice channel with either an answer to a question or acknowledgement of a command. 
