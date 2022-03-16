@@ -19,6 +19,6 @@
 // 	expect(parser).toBeDefined();
 // });
 
-test('Discord constructor', () => {
+test('Parser constructor', () => {
 	console.log('test');
 });
