@@ -19,7 +19,7 @@ const ParserTest = require('../src/parser');
 // 	expect(parser).toBeDefined();
 // });
 
-test('Parser constructor', () => {
+test('Parser test constructor', () => {
 	const parser = new ParserTest('test');
 	expect(parser).toBeDefined();
 });

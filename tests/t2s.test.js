@@ -20,7 +20,7 @@ Tests for text to speech module will go here
 // 	expect(text2speech).toBeDefined();
 // });
 
-test('T2S constructor', () => {
+test('T2S test constructor', () => {
 	const t2s = new T2STest('test');
 	expect(t2s).toBeDefined();
 });

@@ -37,12 +37,12 @@ Tests for discord module will go here
 // 	expect(discordclient).toBeDefined();
 // });
 
-test('Parser constructor', () => {
+test('Discord test constructor', () => {
 	const discordclient = new DiscordHandlerTest("bla");
 	expect(discordclient).toBeDefined();
 });
 
-test('Parser constructor', () => {
+test('Discord audio status defaults to false', () => {
 	const discordclient = new DiscordHandlerTest("bla");
 	expect(discordclient.audio_status).toBe(false);
 });

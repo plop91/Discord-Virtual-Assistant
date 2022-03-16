@@ -29,29 +29,28 @@ class DiscordHandlerGeneric {
 		this.audio_ready = false;
 		this.audio_queue = [];
 
-		this.pool = mariadb.createPool({
-			// process.env.TOKEN
-			host: process.env.DVA_DATABASE_HOST,
-			user:process.env.DVA_DATABASE_USER,
-			password: process.env.DVA_DATABASE_PASSWORD,
-			connectionLimit: 5,
-		});
-
-		this.pool.getConnection()
-			.then (conn => {
-				// create the database if it does not exist should only occur when changing databases.
-				conn.query('CREATE DATABASE IF NOT EXISTS dva');
-				// change into dva database
-				conn.query('USE dva');
-				// create last_seen table if it does not exist
-				return conn.query('CREATE TABLE IF NOT EXISTS last_seen (username CHAR(100) PRIMARY KEY, server CHAR(20))');
-			})
-			.then((res) => {
-				console.log(res);
-			}).catch(err => {
-				console.log(err);
-			});
-
+		// this.pool = mariadb.createPool({
+		// 	// process.env.TOKEN
+		// 	host: process.env.DVA_DATABASE_HOST,
+		// 	user:process.env.DVA_DATABASE_USER,
+		// 	password: process.env.DVA_DATABASE_PASSWORD,
+		// 	connectionLimit: 5,
+		// });
+		//
+		// this.pool.getConnection()
+		// 	.then (conn => {
+		// 		// create the database if it does not exist should only occur when changing databases.
+		// 		conn.query('CREATE DATABASE IF NOT EXISTS dva');
+		// 		// change into dva database
+		// 		conn.query('USE dva');
+		// 		// create last_seen table if it does not exist
+		// 		return conn.query('CREATE TABLE IF NOT EXISTS last_seen (username CHAR(100) PRIMARY KEY, server CHAR(20))');
+		// 	})
+		// 	.then((res) => {
+		// 		console.log(res);
+		// 	}).catch(err => {
+		// 		console.log(err);
+		// 	});
 	}
 
 	/**

@@ -36,7 +36,7 @@ Tests for speech to text module will go here
 // 	const result = speech2text.transcribe('./tests/resources/s2tTestAudio3.flac');
 // 	expect(result).toBe('What time is the basketball game today');
 // });
-test('S2T constructor', () => {
+test('S2T test constructor', () => {
 	const s2t = new S2TTest('test');
 	expect(s2t).toBeDefined();
 });
