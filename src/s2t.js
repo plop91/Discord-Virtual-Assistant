@@ -13,56 +13,57 @@
 const speech = require('@google-cloud/speech');
 const fs = require('fs');
 
-class S2TGeneric{
-    async transcribe(audio){
-        return ""
-    }
+class S2TGeneric {
+	// eslint-disable-next-line no-unused-vars
+	async transcribe(audio) {
+		return '';
+	}
 }
 
 class S2T extends S2TGeneric {
-    constructor() {
-        super();
-    }
+	constructor() {
+		super();
+	}
 
-    async transcribe(audio){
-        // Set up information for transcription request.
-        const client = new speech.SpeechClient();
-        const filename = audio;
-        const encoding = 'FLAC';
-        const sampleRateHertz = 48000;
-        const languageCode = 'en-US';
+	async transcribe(audio) {
+		// Set up information for transcription request.
+		const client = new speech.SpeechClient();
+		const filename = audio;
+		const encoding = 'FLAC';
+		const sampleRateHertz = 48000;
+		const languageCode = 'en-US';
 
-        const config = {
-            encoding: encoding,
-            sampleRateHertz: sampleRateHertz,
-            languageCode: languageCode
-        };
+		const config = {
+			encoding: encoding,
+			sampleRateHertz: sampleRateHertz,
+			languageCode: languageCode,
+		};
 
-        const audioFile = {
-            content: fs.readFileSync(filename).toString('base64')
-        };
+		const audioFile = {
+			content: fs.readFileSync(filename).toString('base64'),
+		};
 
-        const request = {
-            config: config,
-            audioFile: audioFile
-        };
-          
-        // Send request and receive response.
-        const operation = await client.longRunningRecognize(request);
-        const response = await operation.promise();
+		const request = {
+			config: config,
+			audioFile: audioFile,
+		};
 
-        // Return the transcription.
-        return response.results.map(result => result.alternatives[0].transcript);
-    }
+		// Send request and receive response.
+		const operation = await client.longRunningRecognize(request);
+		const response = await operation.promise();
+
+		// Return the transcription.
+		return response.results.map(result => result.alternatives[0].transcript);
+	}
 }
 
 class S2TTest extends S2TGeneric {
-    constructor() {
-        super();
-    }
-    transcribe(audio){
-        // return test transcription
-        return "discord what time is it"
-    }
+	constructor() {
+		super();
+	}
+	transcribe(audio) {
+		// return test transcription
+		return 'discord what time is it';
+	}
 }
 module.exports = S2T;

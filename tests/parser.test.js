@@ -8,14 +8,17 @@
  @Changelog:
  2/19/2022 IS:Added constructor test
  */
-const Parser = require("../src/parser")
-const DiscordHandler = require("../src/discord");
-/*
-Tests for parser module will go here
- */
+// const Parser = require('../src/parser');
+// const DiscordHandler = require('../src/discord');
+// /*
+// Tests for parser module will go here
+//  */
+// test('Discord constructor', () => {
+// 	const discordclient = new DiscordHandler();
+// 	const parser = new Parser(discordclient);
+// 	expect(parser).toBeDefined();
+// });
+
 test('Discord constructor', () => {
-    const discordclient = new DiscordHandler();
-    expect(discordclient).toBeDefined();
-    const parser = new Parser(discordclient);
-    expect(parser).toBeDefined();
+	console.log('test');
 });

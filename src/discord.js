@@ -15,6 +15,7 @@
 const Discord = require('discord.js');
 const mariadb = require('mariadb');
 const fs = require('fs');
+require('dotenv').config();
 
 /**
  * Generic of the Discord Bot Handler class, used in testing
