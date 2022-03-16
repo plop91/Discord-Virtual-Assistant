@@ -39,4 +39,4 @@ class ParserTest extends ParserGeneric {
 	}
 
 }
-module.exports = Parser;
+module.exports = ParserTest;

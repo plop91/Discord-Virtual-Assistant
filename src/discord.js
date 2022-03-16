@@ -186,4 +186,4 @@ class DiscordHandlerTest extends DiscordHandlerGeneric {
 }
 
 // Export module.
-module.exports = DiscordHandler;
+module.exports = DiscordHandlerTest;

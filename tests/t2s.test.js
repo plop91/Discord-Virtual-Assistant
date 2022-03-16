@@ -8,7 +8,7 @@
  @Changelog:
  2/19/2022 IS:Added constructor test
  */
-// const T2S = require('../src/t2s');
+const T2STest = require('../src/t2s');
 /*
 Tests for text to speech module will go here
  */
@@ -20,6 +20,7 @@ Tests for text to speech module will go here
 // 	expect(text2speech).toBeDefined();
 // });
 
-test('Parser constructor', () => {
-	console.log('test');
+test('T2S constructor', () => {
+	const t2s = new T2STest('test');
+	expect(t2s).toBeDefined();
 });

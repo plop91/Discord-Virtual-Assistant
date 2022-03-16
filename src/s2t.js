@@ -66,4 +66,4 @@ class S2TTest extends S2TGeneric {
 		return 'discord what time is it';
 	}
 }
-module.exports = S2T;
+module.exports = S2TTest;

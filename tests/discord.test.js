@@ -8,7 +8,7 @@
  @Changelog:
  2/19/2022 IS:Added constructor test
  */
-// const DiscordHandler = require('../src/discord');
+const DiscordHandlerTest = require('../src/discord');
 //
 // let discord_token;
 // try {
@@ -38,5 +38,11 @@ Tests for discord module will go here
 // });
 
 test('Parser constructor', () => {
-	console.log('test');
+	const discordclient = new DiscordHandlerTest("bla");
+	expect(discordclient).toBeDefined();
+});
+
+test('Parser constructor', () => {
+	const discordclient = new DiscordHandlerTest("bla");
+	expect(discordclient.audio_status).toBe(false);
 });

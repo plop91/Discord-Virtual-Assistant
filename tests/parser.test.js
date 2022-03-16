@@ -8,7 +8,7 @@
  @Changelog:
  2/19/2022 IS:Added constructor test
  */
-// const Parser = require('../src/parser');
+const ParserTest = require('../src/parser');
 // const DiscordHandler = require('../src/discord');
 // /*
 // Tests for parser module will go here
@@ -20,5 +20,6 @@
 // });
 
 test('Parser constructor', () => {
-	console.log('test');
+	const parser = new ParserTest('test');
+	expect(parser).toBeDefined();
 });

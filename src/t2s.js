@@ -54,4 +54,4 @@ class T2STest extends T2SGeneric {
 		return null;
 	}
 }
-module.exports = T2S;
+module.exports = T2STest;

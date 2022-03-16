@@ -9,7 +9,7 @@
  3/16/2022 JT:Added audio tests
  2/19/2022 IS:Added constructor test
  */
-const S2T = require('../src/s2t');
+const S2TTest = require('../src/s2t');
 /*
 Tests for speech to text module will go here
  */
@@ -37,5 +37,6 @@ Tests for speech to text module will go here
 // 	expect(result).toBe('What time is the basketball game today');
 // });
 test('S2T constructor', () => {
-	console.log('test');
+	const s2t = new S2TTest('test');
+	expect(s2t).toBeDefined();
 });
