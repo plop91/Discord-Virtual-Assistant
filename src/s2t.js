@@ -28,8 +28,8 @@ class S2T extends S2TGeneric {
         // Set up information for transcription request.
         const client = new speech.SpeechClient();
         const filename = audio;
-        const encoding = 'LINEAR16';
-        const sampleRateHertz = 16000;
+        const encoding = 'FLAC';
+        const sampleRateHertz = 48000;
         const languageCode = 'en-US';
 
         const config = {
