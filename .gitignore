@@ -137,3 +137,4 @@ node_modules/
 response.mp3
 config.json
 recordings/
+GoogleServiceAccount.json

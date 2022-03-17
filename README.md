@@ -8,7 +8,7 @@
 ## Instructions
 
 ### Installation:
-Discord Virtual Assistant requires node.js in order to run, if you do not have node.js installed follow [these instructions][1] first then complete these steps
+Discord Virtual Assistant requires node.js in order to run, if you do not have node.js installed follow [these instructions](https://nodejs.org/en/download/) first then complete these steps
 
 1. Download code to "DISCORD_VIRTUAL_ASSISTANT_DIR" (replace "DISCORD_VIRTUAL_ASSISTANT_DIR" with desired folder name)
 ```shell
@@ -21,6 +21,10 @@ cd DISCORD_VIRTUAL_ASSISTANT_DIR
 3. Install dependencies
 ```shell
 npm install
+```
+4. Create a Discord bot token and set it as an environmental variable, instructions for creating a discord bot token can be found [here](https://www.writebots.com/discord-bot-token/)
+```shell
+export TOKEN=DISCORD_TOKEN # commands may vary per operating system
 ```
 
 ### Usage:
@@ -161,4 +165,3 @@ Edit final report based on feedback from draft
 * April 25 - April 29
 Submit Finalized report
 Deliver presentation
-
