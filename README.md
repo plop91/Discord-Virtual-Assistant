@@ -26,6 +26,12 @@ npm install
 ```shell
 export TOKEN=DISCORD_TOKEN # commands may vary per operating system
 ```
+5. Download and install MariaDB using [these instructions](https://mariadb.com/get-started-with-mariadb/) or contact databases@sodersjerna.com for access to existing database.
+```shell
+export DVA_DATABASE_HOST=hostname/ip
+export DVA_DATABASE_USER=username
+export DVA_DATABASE_PASSWORD=password
+```
 
 ### Usage:
 1. Change to downloaded directory

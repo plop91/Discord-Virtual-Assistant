@@ -4,6 +4,7 @@
   "description": "This project seeks to solve that Discord currently lacks any built-in virtual assistant to help users with their daily interactions with the app",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "jest"
   },
   "keywords": [
