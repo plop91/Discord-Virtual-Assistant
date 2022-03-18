@@ -20,7 +20,8 @@ class T2S {
 		// This variable is used for testing purposes to compare against known audio content.
 		this.lastAudioContent = null;
 		// Replace \\n (slash followed by n character) with \n (newline character)
-		const key = process.env.PRIVATE_KEY.replace(/(\\n)/g, '\n');
+		let key = process.env.PRIVATE_KEY;
+		key = key.replace(/(\\n)/g, '\n');
 		this.t2sClient = new textToSpeech.TextToSpeechClient({
 			credentials: {
 				private_key: key,
