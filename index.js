@@ -35,7 +35,7 @@ discordclient.login().then(async () => {
 		// if the discord client has audio ready to process
 		if (discordclient.audio_ready) {
 			// transcribe the audio using the speech to text module
-			const transcript = speech2text.transcribe(discordclient.audio_clip);
+			const transcript = await speech2text.transcribe(discordclient.audio_clip);
 			// Parse the transcript and preform actions
 			const status = parser.parse(transcript);
 

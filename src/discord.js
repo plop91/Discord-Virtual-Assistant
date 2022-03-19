@@ -150,7 +150,7 @@ class DiscordHandler extends DiscordHandlerGeneric {
 				const writer = fs.createWriteStream('recordings/' + message.id);
 				audio.pipe(writer);
 				writer.on('finish', () => {
-					this.audio_queue.push(message.id);
+					this.audio_queue.push('recordings/' + message.id);
 					this.audio_ready = true;
 					message.channel.send('Recording finished');
 				});
