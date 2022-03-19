@@ -24,7 +24,7 @@ npm install
 ```
 4. Create a Discord bot token and set it as an environmental variable, instructions for creating a discord bot token can be found [here](https://www.writebots.com/discord-bot-token/)
 ```shell
-export TOKEN=DISCORD_TOKEN # commands may vary per operating system
+export DISCORD_TOKEN=YOUR_DISCORD_TOKEN # commands may vary per operating system
 ```
 5. Download and install MariaDB using [these instructions](https://mariadb.com/get-started-with-mariadb/) or contact databases@sodersjerna.com for access to existing database.
 ```shell

@@ -6,6 +6,7 @@
  @Description: Interface with discord API
 
  @Changelog:
+ 3/19/2022 IS: Upgrade to async functions, update token env name to DISCORD_TOKEN
  3/16/2022 IS: Update database to mariaDB
  2/08/2022 IS: Add sqlite3 database with temp test function.
  2/25/2022 IS: Made token a parameter and moved config import to index.js
@@ -15,14 +16,18 @@
 const Discord = require('discord.js');
 const mariadb = require('mariadb');
 const fs = require('fs');
+require('dotenv').config();
 
 /**
  * Generic of the Discord Bot Handler class, used in testing
  */
 class DiscordHandlerGeneric {
-	constructor(token) {
+	/**
+	 * Generic constructor, used to set discord token, prepare the audio queue, and create a mariadb pool to access database.
+	 */
+	constructor() {
 		// Discord token
-		this.token = token;
+		this.token = process.env.DISCORD_TOKEN;
 
 		// Voice recording.
 		this.audio_ready = false;
@@ -31,25 +36,10 @@ class DiscordHandlerGeneric {
 		this.pool = mariadb.createPool({
 			// process.env.TOKEN
 			host: process.env.DVA_DATABASE_HOST,
-			user:process.env.DVA_DATABASE_USER,
+			user: process.env.DVA_DATABASE_USER,
 			password: process.env.DVA_DATABASE_PASSWORD,
-			connectionLimit: 5,
+			connectionLimit: 10,
 		});
-
-		this.pool.getConnection()
-			.then (conn => {
-				// create the database if it does not exist should only occur when changing databases.
-				conn.query('CREATE DATABASE IF NOT EXISTS dva');
-				// change into dva database
-				conn.query('USE dva');
-				// create last_seen table if it does not exist
-				return conn.query('CREATE TABLE IF NOT EXISTS last_seen (username CHAR(100) PRIMARY KEY, server CHAR(20))');
-			})
-			.then((res) => {
-				console.log(res);
-			}).catch(err => {
-				console.log(err);
-			});
 
 	}
 
@@ -73,6 +63,27 @@ class DiscordHandlerGeneric {
 		return clip;
 	}
 
+	async login() {
+		await this.pool.getConnection()
+			.then (conn => {
+				// create the database if it does not exist should only occur when changing databases.
+				conn.query('CREATE DATABASE IF NOT EXISTS dva');
+				// change into dva database
+				conn.query('USE dva');
+				// create last_seen table if it does not exist
+				return conn.query('CREATE TABLE IF NOT EXISTS last_seen (username CHAR(100) PRIMARY KEY, server CHAR(20))');
+			})
+			.then((res) => {
+				console.log(res);
+			}).catch(err => {
+				console.log(err);
+			});
+	}
+
+	async logout() {
+		await this.pool.end();
+	}
+
 }
 
 
@@ -82,10 +93,9 @@ class DiscordHandlerGeneric {
 class DiscordHandler extends DiscordHandlerGeneric {
 	/**
      * Base constructor, sets up bot, on message functions and logs the bot in.
-     * @param token The token used to log the bot in.
      */
-	constructor(token) {
-		super(token);
+	constructor() {
+		super();
 		// Discord API client object.
 		this.client = new Discord.Client();
 
@@ -147,7 +157,7 @@ class DiscordHandler extends DiscordHandlerGeneric {
 
 			}
 			else if (message.content === 'test') {
-				this.pool.getConnection()
+				await this.pool.getConnection()
 					.then (conn => {
 						conn.query('USE dva');
 						return conn.query('SELECT * FROM last_seen');
@@ -166,8 +176,18 @@ class DiscordHandler extends DiscordHandlerGeneric {
 			console.log('Discord Bot Ready!');
 		});
 
+	}
+
+	async login() {
+		await super.login();
 		// Log the bot in.
-		this.client.login(this.token);
+		await this.client.login(this.token);
+	}
+
+	async logout() {
+		await super.logout();
+		// Log the bot in.
+		await this.client.logout();
 	}
 
 }
