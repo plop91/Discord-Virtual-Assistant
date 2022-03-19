@@ -142,15 +142,16 @@ class DiscordHandler extends DiscordHandlerGeneric {
 					}
 				}
 				// create a recorder object
-				const audio = this.connection.receiver.createStream(message.author, { mode: 'pcm' });
+				const audio = this.connection.receiver.createStream(message.author, { mode: 'opus' });
 				// save audio stream, refer to https://v12.discordjs.guide/voice/receiving-audio.html#basic-usage for playback information
 				if (!fs.existsSync('recordings')) {
 					fs.mkdirSync('recordings');
 				}
-				const writer = fs.createWriteStream('recordings/' + message.id);
+				const writer = fs.createWriteStream('recordings/' + message.id + '.ogg');
 				audio.pipe(writer);
-				writer.on('finish', () => {
-					this.audio_queue.push('recordings/' + message.id);
+				await writer.on('finish', () => {
+					// this.connection.play(fs.createReadStream('recordings/' + message.id + '.ogg'), { type: 'ogg/opus' });
+					this.audio_queue.push('recordings/' + message.id + '.ogg');
 					this.audio_ready = true;
 					message.channel.send('Recording finished');
 				});
@@ -179,15 +180,28 @@ class DiscordHandler extends DiscordHandlerGeneric {
 	}
 
 	async login() {
-		await super.login();
-		// Log the bot in.
-		await this.client.login(this.token);
+		try {
+			await super.login();
+			// Log the bot in.
+			await this.client.login(this.token);
+			return true;
+		}
+		catch (error) {
+			console.log(error);
+			return false;
+		}
 	}
 
 	async logout() {
-		await super.logout();
-		// Log the bot in.
-		await this.client.logout();
+		try {
+			await super.logout();
+			await this.client.destroy();
+			return true;
+		}
+		catch (error) {
+			console.log(error);
+			return false;
+		}
 	}
 
 }
