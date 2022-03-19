@@ -7,8 +7,8 @@
 
 ## Instructions
 
-### Installation:
-Discord Virtual Assistant requires node.js in order to run, if you do not have node.js installed follow [these instructions](https://nodejs.org/en/download/) first then complete these steps
+### Build:
+Discord Virtual Assistant docker requires docker in order to run, if you do not have docker installed follow [these instructions](https://docs.docker.com/get-docker/) first then complete these steps
 
 1. Download code to "DISCORD_VIRTUAL_ASSISTANT_DIR" (replace "DISCORD_VIRTUAL_ASSISTANT_DIR" with desired folder name)
 ```shell
@@ -17,10 +17,6 @@ git clone https://github.com/plop91/Discord-Virtual-Assistant.git DISCORD_VIRTUA
 2. Change to downloaded directory
 ```shell
 cd DISCORD_VIRTUAL_ASSISTANT_DIR
-```
-3. Install dependencies
-```shell
-npm install
 ```
 4. Create a Discord bot token and set it as an environmental variable, instructions for creating a discord bot token can be found [here](https://www.writebots.com/discord-bot-token/)
 ```shell
@@ -32,25 +28,19 @@ export DVA_DATABASE_HOST=hostname/ip
 export DVA_DATABASE_USER=username
 export DVA_DATABASE_PASSWORD=password
 ```
+6. Build from dockerfile
+```shell
+docker build --build-arg token=DISCORD_TOKEN --build-arg database_host=DATABASE_HOST --build-arg database_username=DATABASE_USERNAME --build-arg database_password=DATABASE_PASSWORD -t discord-virtual-assistant .
+```
 
-### Usage:
+### Run:
 1. Change to downloaded directory
 ```shell
 cd DISCORD_VIRTUAL_ASSISTANT_DIR
 ```
-2. Start the node application
+2. Start the docker container
 ```shell
-npm start
-```
-
-### Testing:
-1. Change to downloaded directory
-```shell
-cd DISCORD_VIRTUAL_ASSISTANT_DIR
-```
-2. Start the tests for the node application
-```shell
-npm test
+docker run -d --name dva discord-virtual-assistant 
 ```
 
 ## Objectives
