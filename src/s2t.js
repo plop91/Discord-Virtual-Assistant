@@ -6,6 +6,7 @@
  @Description:  Interface with Speech-to-Text API
 
  @Changelog:
+ 3/20/2022 JT: changed encoding to OGG_OPUS
  3/14/2022 JT: added Google Speech-To-Text and began work on transcription
  2/19/2022 IS: added basic structure
  */
@@ -28,7 +29,7 @@ class S2T extends S2TGeneric {
         // Set up information for transcription request.
         const client = new speech.SpeechClient();
         const filename = audio;
-        const encoding = 'FLAC';
+        const encoding = 'OGG_OPUS';
         const sampleRateHertz = 48000;
         const languageCode = 'en-US';
 
