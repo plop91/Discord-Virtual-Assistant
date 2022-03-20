@@ -6,6 +6,7 @@
  @Description: Unit testing for Speech-to-Text interface.
 
  @Changelog:
+ 3/20/2022 JT:Changed tests to opus format
  3/16/2022 JT:Added audio tests
  2/19/2022 IS:Added constructor test
  */
@@ -19,19 +20,19 @@ test('S2T constructor', () => {
     expect(speech2text).toBeDefined();
 });
 
-test('S2T "Hey Discord bot"', () => {
+test('S2T "Hey Discord bot"', async () => {
     const speech2text = new S2T();
     const result = speech2text.transcribe("./tests/resources/s2tTestAudio1.opus");
     expect(result).toBe("Hey Discord bot");
 });
 
-test('S2T "Whats the weather like today"', () => {
+test('S2T "Whats the weather like today"', async () => {
     const speech2text = new S2T();
     const result = speech2text.transcribe("./tests/resources/s2tTestAudio2.opus");
     expect(result).toBe("Whats the weather like today");
 });
 
-test('S2T "What time is the basketball game today"', () => {
+test('S2T "What time is the basketball game today"', async () => {
     const speech2text = new S2T();
     const result = speech2text.transcribe("./tests/resources/s2tTestAudio3.opus");
     expect(result).toBe("What time is the basketball game today");
