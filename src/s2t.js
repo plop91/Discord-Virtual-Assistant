@@ -15,6 +15,17 @@ const speech = require('@google-cloud/speech');
 const fs = require('fs');
 
 class S2T {
+    constructor() {
+        let key = process.env.PRIVATE_KEY;
+		key = key.replace(/(\\n)/g, '\n');
+		this.s2tClient = new speech.SpeechClient({
+			credentials: {
+				private_key: key,
+				client_email: process.env.CLIENT_EMAIL,
+			},
+		});
+    }
+
     /**
 	 * Function takes in a path to an audio file in OGG_OPUS format and uses
      * Google's speech-to-text API to create a transcript. The transcript
@@ -22,9 +33,8 @@ class S2T {
 	 * @param filepath: the path to the audio file
 	 * @returns {string}: the transcription returned by Google's speech-to-text
 	 */
-    async transcribe(filepath){
+    async transcribe(filepath) {
         // Set up information for transcription request.
-        const client = new speech.SpeechClient();
         const encoding = 'OGG_OPUS';
         const sampleRateHertz = 48000;
         const languageCode = 'en-US';
@@ -45,7 +55,7 @@ class S2T {
         };
           
         // Send request and receive response.
-        const operation = await client.longRunningRecognize(request);
+        const operation = await this.s2tClient.longRunningRecognize(request);
         const response = await operation.promise();
 
         // Return the transcription.
