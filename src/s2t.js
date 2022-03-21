@@ -14,21 +14,17 @@
 const speech = require('@google-cloud/speech');
 const fs = require('fs');
 
-class S2TGeneric{
-    async transcribe(audio){
-        return ""
-    }
-}
-
-class S2T extends S2TGeneric {
-    constructor() {
-        super();
-    }
-
-    async transcribe(audio){
+class S2T {
+    /**
+	 * Function takes in a path to an audio file in OGG_OPUS format and uses
+     * Google's speech-to-text API to create a transcript. The transcript
+     * is then returned as a string.
+	 * @param filepath: the path to the audio file
+	 * @returns {string}: the transcription returned by Google's speech-to-text
+	 */
+    async transcribe(filepath){
         // Set up information for transcription request.
         const client = new speech.SpeechClient();
-        const filename = audio;
         const encoding = 'OGG_OPUS';
         const sampleRateHertz = 48000;
         const languageCode = 'en-US';
@@ -39,13 +35,13 @@ class S2T extends S2TGeneric {
             languageCode: languageCode
         };
 
-        const audioFile = {
-            content: fs.readFileSync(filename).toString('base64')
+        const audio = {
+            content: fs.readFileSync(filepath).toString('base64')
         };
 
         const request = {
             config: config,
-            audioFile: audioFile
+            audio: audio
         };
           
         // Send request and receive response.
@@ -57,13 +53,4 @@ class S2T extends S2TGeneric {
     }
 }
 
-class S2TTest extends S2TGeneric {
-    constructor() {
-        super();
-    }
-    transcribe(audio){
-        // return test transcription
-        return "discord what time is it"
-    }
-}
 module.exports = S2T;
