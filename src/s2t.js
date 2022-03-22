@@ -6,6 +6,7 @@
  @Description:  Interface with Speech-to-Text API
 
  @Changelog:
+ 3/21/2022 JT: finished first working version
  3/20/2022 JT: changed encoding to OGG_OPUS
  3/14/2022 JT: added Google Speech-To-Text and began work on transcription
  2/19/2022 IS: added basic structure
@@ -55,11 +56,14 @@ class S2T {
         };
           
         // Send request and receive response.
-        const operation = await this.s2tClient.longRunningRecognize(request);
-        const response = await operation.promise();
+        const [operation] = await this.s2tClient.longRunningRecognize(request);
+        const [response] = await operation.promise();
 
         // Return the transcription.
-        return response.results.map(result => result.alternatives[0].transcript);
+        const transcription = response.results
+            .map(result => result.alternatives[0].transcript)
+            .join('\n');
+        return transcription;
     }
 }
 
