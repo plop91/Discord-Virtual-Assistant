@@ -11,51 +11,59 @@
  */
 const DiscordHandler = require('../src/discord');
 
-/*
-Tests for discord module will go here
- */
-
 // eslint-disable-next-line no-undef
-test('Discord constructor', () => {
-	const discordclient = new DiscordHandler();
+describe('Discord tests', () => {
 	// eslint-disable-next-line no-undef
-	expect(discordclient).toBeDefined();
-});
+	beforeEach(() => {
+		jest.setTimeout(10000);
+	});
 
-// eslint-disable-next-line no-undef
-test('Discord login', async () => {
-	const discordclient = new DiscordHandler();
-	// eslint-disable-next-line no-undef
-	expect(discordclient).toBeDefined();
-	const status = await discordclient.login();
-	// eslint-disable-next-line no-undef
-	expect(status).toBeTruthy();
-});
+	/*
+    Tests for discord module will go here
+     */
 
-// eslint-disable-next-line no-undef
-test('Discord logout', async () => {
-	const discordclient = new DiscordHandler();
 	// eslint-disable-next-line no-undef
-	expect(discordclient).toBeDefined();
-	const status = await discordclient.logout();
-	// eslint-disable-next-line no-undef
-	expect(status).toBeTruthy();
-});
+	test('Discord constructor', () => {
+		const discordclient = new DiscordHandler();
+		// eslint-disable-next-line no-undef
+		expect(discordclient).toBeDefined();
+	});
 
-// eslint-disable-next-line no-undef
-test('Discord audio_status defaults to false', async () => {
-	const discordclient = new DiscordHandler();
 	// eslint-disable-next-line no-undef
-	expect(discordclient).toBeDefined();
-	// eslint-disable-next-line no-undef
-	expect(discordclient.audio_ready).toBeFalsy();
-});
+	test('Discord login', async () => {
+		const discordclient = new DiscordHandler();
+		// eslint-disable-next-line no-undef
+		expect(discordclient).toBeDefined();
+		const status = await discordclient.login();
+		// eslint-disable-next-line no-undef
+		expect(status).toBeTruthy();
+	});
 
-// eslint-disable-next-line no-undef
-test('Discord audio_queue defaults to empty', async () => {
-	const discordclient = new DiscordHandler();
 	// eslint-disable-next-line no-undef
-	expect(discordclient).toBeDefined();
+	test('Discord logout', async () => {
+		const discordclient = new DiscordHandler();
+		// eslint-disable-next-line no-undef
+		expect(discordclient).toBeDefined();
+		const status = await discordclient.logout();
+		// eslint-disable-next-line no-undef
+		expect(status).toBeTruthy();
+	});
+
 	// eslint-disable-next-line no-undef
-	expect(discordclient.audio_queue.length).toEqual(0);
+	test('Discord audio_status defaults to false', async () => {
+		const discordclient = new DiscordHandler();
+		// eslint-disable-next-line no-undef
+		expect(discordclient).toBeDefined();
+		// eslint-disable-next-line no-undef
+		expect(discordclient.audio_ready).toBeFalsy();
+	});
+
+	// eslint-disable-next-line no-undef
+	test('Discord audio_queue defaults to empty', async () => {
+		const discordclient = new DiscordHandler();
+		// eslint-disable-next-line no-undef
+		expect(discordclient).toBeDefined();
+		// eslint-disable-next-line no-undef
+		expect(discordclient.audio_queue.length).toEqual(0);
+	});
 });

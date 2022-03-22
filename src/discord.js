@@ -22,10 +22,13 @@ require('dotenv').config();
  * Generic of the Discord Bot Handler class, used in testing
  */
 class DiscordHandlerGeneric {
+
 	/**
 	 * Generic constructor, used to set discord token, prepare the audio queue, and create a mariadb pool to access database.
 	 */
-	constructor() {
+	constructor(timeout) {
+		this.LOGIN_TIMEOUT = timeout;
+
 		// Discord token
 		this.token = process.env.DISCORD_TOKEN;
 
@@ -95,12 +98,14 @@ class DiscordHandler extends DiscordHandlerGeneric {
      * Base constructor, sets up bot, on message functions and logs the bot in.
      */
 	constructor() {
-		super();
+		super(20000);
 		// Discord API client object.
 		this.client = new Discord.Client();
 
 		// Voice connection defaulted to null indicating bot is not connected to voice.
 		this.connection = null;
+
+		this.connected = false;
 
 		// Message handling function.
 		this.client.on('message', async message => {
@@ -175,15 +180,24 @@ class DiscordHandler extends DiscordHandlerGeneric {
 		// Function that runs once at startup.
 		this.client.once('ready', () => {
 			console.log('Discord Bot Ready!');
+			this.connected = true;
 		});
 
 	}
 
 	async login() {
+		class Login_error extends Error {}
 		try {
+			const start = Date.now();
 			await super.login();
 			// Log the bot in.
 			await this.client.login(this.token);
+			while (!this.connected) {
+				const now = Date.now();
+				if (now - start > this.LOGIN_TIMEOUT) {
+					throw new Login_error('login timer exceeded');
+				}
+			}
 			return true;
 		}
 		catch (error) {
@@ -212,7 +226,7 @@ class DiscordHandler extends DiscordHandlerGeneric {
 // eslint-disable-next-line no-unused-vars
 class DiscordHandlerTest extends DiscordHandlerGeneric {
 	constructor() {
-		super();
+		super(20000);
 	}
 
 
