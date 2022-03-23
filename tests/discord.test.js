@@ -10,62 +10,79 @@
  2/19/2022 IS:Added constructor test
  */
 const DiscordHandler = require('../src/discord');
-// eslint-disable-next-line no-undef
-jest.useFakeTimers('legacy');
+
 
 // eslint-disable-next-line no-undef
-describe('Discord tests', () => {
-	// eslint-disable-next-line no-undef
-	beforeEach(() => {
-		jest.setTimeout(10000);
-	});
+describe('Base Discord', () => {
+
+	let discord = null;
+
+	async function setup() {
+		discord = new DiscordHandler();
+	}
+
+	async function logout() {
+		await discord.logout();
+	}
 
 	/*
     Tests for discord module will go here
      */
 
 	// eslint-disable-next-line no-undef
-	test('Discord constructor', () => {
-		const discordclient = new DiscordHandler();
-		// eslint-disable-next-line no-undef
-		expect(discordclient).toBeDefined();
+	beforeEach(async () => {
+		await setup();
 	});
 
-	// // eslint-disable-next-line no-undef
-	// test('Discord login', async () => {
-	// 	const discordclient = new DiscordHandler();
-	// 	// eslint-disable-next-line no-undef
-	// 	expect(discordclient).toBeDefined();
-	// 	const status = await discordclient.login();
-	// 	// eslint-disable-next-line no-undef
-	// 	expect(status).toBeTruthy();
-	// });
-	//
-	// // eslint-disable-next-line no-undef
-	// test('Discord logout', async () => {
-	// 	const discordclient = new DiscordHandler();
-	// 	// eslint-disable-next-line no-undef
-	// 	expect(discordclient).toBeDefined();
-	// 	const status = await discordclient.logout();
-	// 	// eslint-disable-next-line no-undef
-	// 	expect(status).toBeTruthy();
-	// });
+	// eslint-disable-next-line no-undef
+	afterEach(async () => {
+		await logout();
+	});
+
+	// eslint-disable-next-line no-undef
+	test('Discord constructor', async () => {
+		// eslint-disable-next-line no-undef
+		expect(discord).toBeDefined();
+	});
 
 	// eslint-disable-next-line no-undef
 	test('Discord audio_status defaults to false', async () => {
-		const discordclient = new DiscordHandler();
 		// eslint-disable-next-line no-undef
-		expect(discordclient).toBeDefined();
-		// eslint-disable-next-line no-undef
-		expect(discordclient.audio_ready).toBeFalsy();
+		expect(discord.audio_ready).toBeFalsy();
 	});
 
 	// eslint-disable-next-line no-undef
 	test('Discord audio_queue defaults to empty', async () => {
-		const discordclient = new DiscordHandler();
 		// eslint-disable-next-line no-undef
-		expect(discordclient).toBeDefined();
-		// eslint-disable-next-line no-undef
-		expect(discordclient.audio_queue.length).toEqual(0);
+		expect(discord.audio_queue.length).toEqual(0);
 	});
 });
+
+// // eslint-disable-next-line no-undef
+// describe('login/logout discord', () => {
+//
+//
+// 	// eslint-disable-next-line no-undef
+// 	test('Discord login', async () => {
+// 		const discordclient = new DiscordHandler();
+// 		// eslint-disable-next-line no-undef
+// 		expect(discordclient).toBeDefined();
+// 		const status = await discordclient.login();
+// 		// eslint-disable-next-line no-undef
+// 		expect(status).toBeTruthy();
+// 	});
+//
+// 	// eslint-disable-next-line no-undef
+// 	test('Discord logout', async () => {
+// 		const discordclient = new DiscordHandler();
+// 		// eslint-disable-next-line no-undef
+// 		expect(discordclient).toBeDefined();
+// 		await discordclient.login();
+//
+// 		// eslint-disable-next-line no-undef
+// 		expect(discordclient).toBeDefined();
+// 		const status = await discordclient.logout();
+// 		// eslint-disable-next-line no-undef
+// 		expect(status).toBeTruthy();
+// 	});
+// });

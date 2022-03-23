@@ -36,13 +36,6 @@ class DiscordHandlerGeneric {
 		this.audio_ready = false;
 		this.audio_queue = [];
 
-		this.pool = mariadb.createPool({
-			// process.env.TOKEN
-			host: process.env.DVA_DATABASE_HOST,
-			user: process.env.DVA_DATABASE_USER,
-			password: process.env.DVA_DATABASE_PASSWORD,
-			connectionLimit: 10,
-		});
 
 	}
 
@@ -67,6 +60,14 @@ class DiscordHandlerGeneric {
 	}
 
 	async login() {
+		this.pool = mariadb.createPool({
+			// process.env.TOKEN
+			host: process.env.DVA_DATABASE_HOST,
+			user: process.env.DVA_DATABASE_USER,
+			password: process.env.DVA_DATABASE_PASSWORD,
+			connectionLimit: 10,
+		});
+
 		await this.pool.getConnection()
 			.then (conn => {
 				// create the database if it does not exist should only occur when changing databases.
@@ -84,7 +85,9 @@ class DiscordHandlerGeneric {
 	}
 
 	async logout() {
-		await this.pool.end();
+		if (this.pool) {
+			await this.pool.end();
+		}
 	}
 
 }
