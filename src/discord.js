@@ -179,7 +179,7 @@ class DiscordHandler extends DiscordHandlerGeneric {
 
 		// Function that runs once at startup.
 		this.client.once('ready', () => {
-			console.log('Discord Bot Ready!');
+			// console.log('Discord Bot Ready!');
 			this.connected = true;
 		});
 
@@ -226,7 +226,7 @@ class DiscordHandler extends DiscordHandlerGeneric {
 // eslint-disable-next-line no-unused-vars
 class DiscordHandlerTest extends DiscordHandlerGeneric {
 	constructor() {
-		super(20000);
+		super(30000);
 	}
 
 
