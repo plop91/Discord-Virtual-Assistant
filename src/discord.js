@@ -6,6 +6,7 @@
  @Description: Interface with discord API
 
  @Changelog:
+ 3/19/2022 IS: Upgrade to async functions, update token env name to DISCORD_TOKEN
  3/16/2022 IS: Update database to mariaDB
  2/08/2022 IS: Add sqlite3 database with temp test function.
  2/25/2022 IS: Made token a parameter and moved config import to index.js
@@ -15,41 +16,26 @@
 const Discord = require('discord.js');
 const mariadb = require('mariadb');
 const fs = require('fs');
+require('dotenv').config();
 
 /**
  * Generic of the Discord Bot Handler class, used in testing
  */
 class DiscordHandlerGeneric {
-	constructor(token) {
+
+	/**
+	 * Generic constructor, used to set discord token, prepare the audio queue, and create a mariadb pool to access database.
+	 */
+	constructor(timeout) {
+		this.LOGIN_TIMEOUT = timeout;
+
 		// Discord token
-		this.token = token;
+		this.token = process.env.DISCORD_TOKEN;
 
 		// Voice recording.
 		this.audio_ready = false;
 		this.audio_queue = [];
 
-		this.pool = mariadb.createPool({
-			// process.env.TOKEN
-			host: process.env.DVA_DATABASE_HOST,
-			user:process.env.DVA_DATABASE_USER,
-			password: process.env.DVA_DATABASE_PASSWORD,
-			connectionLimit: 5,
-		});
-
-		this.pool.getConnection()
-			.then (conn => {
-				// create the database if it does not exist should only occur when changing databases.
-				conn.query('CREATE DATABASE IF NOT EXISTS dva');
-				// change into dva database
-				conn.query('USE dva');
-				// create last_seen table if it does not exist
-				return conn.query('CREATE TABLE IF NOT EXISTS last_seen (username CHAR(100) PRIMARY KEY, server CHAR(20))');
-			})
-			.then((res) => {
-				console.log(res);
-			}).catch(err => {
-				console.log(err);
-			});
 
 	}
 
@@ -73,6 +59,37 @@ class DiscordHandlerGeneric {
 		return clip;
 	}
 
+	async login() {
+		this.pool = mariadb.createPool({
+			// process.env.TOKEN
+			host: process.env.DVA_DATABASE_HOST,
+			user: process.env.DVA_DATABASE_USER,
+			password: process.env.DVA_DATABASE_PASSWORD,
+			connectionLimit: 10,
+		});
+
+		await this.pool.getConnection()
+			.then (conn => {
+				// create the database if it does not exist should only occur when changing databases.
+				conn.query('CREATE DATABASE IF NOT EXISTS dva');
+				// change into dva database
+				conn.query('USE dva');
+				// create last_seen table if it does not exist
+				return conn.query('CREATE TABLE IF NOT EXISTS last_seen (username CHAR(100) PRIMARY KEY, server CHAR(20))');
+			})
+			.then((res) => {
+				console.log(res);
+			}).catch(err => {
+				console.log(err);
+			});
+	}
+
+	async logout() {
+		if (this.pool) {
+			await this.pool.end();
+		}
+	}
+
 }
 
 
@@ -82,15 +99,16 @@ class DiscordHandlerGeneric {
 class DiscordHandler extends DiscordHandlerGeneric {
 	/**
      * Base constructor, sets up bot, on message functions and logs the bot in.
-     * @param token The token used to log the bot in.
      */
-	constructor(token) {
-		super(token);
+	constructor() {
+		super(20000);
 		// Discord API client object.
 		this.client = new Discord.Client();
 
 		// Voice connection defaulted to null indicating bot is not connected to voice.
 		this.connection = null;
+
+		this.connected = false;
 
 		// Message handling function.
 		this.client.on('message', async message => {
@@ -132,22 +150,23 @@ class DiscordHandler extends DiscordHandlerGeneric {
 					}
 				}
 				// create a recorder object
-				const audio = this.connection.receiver.createStream(message.author, { mode: 'pcm' });
+				const audio = this.connection.receiver.createStream(message.author, { mode: 'opus' });
 				// save audio stream, refer to https://v12.discordjs.guide/voice/receiving-audio.html#basic-usage for playback information
 				if (!fs.existsSync('recordings')) {
 					fs.mkdirSync('recordings');
 				}
-				const writer = fs.createWriteStream('recordings/' + message.id);
+				const writer = fs.createWriteStream('recordings/' + message.id + '.ogg');
 				audio.pipe(writer);
-				writer.on('finish', () => {
-					this.audio_queue.push(message.id);
+				await writer.on('finish', () => {
+					// this.connection.play(fs.createReadStream('recordings/' + message.id + '.ogg'), { type: 'ogg/opus' });
+					this.audio_queue.push('recordings/' + message.id + '.ogg');
 					this.audio_ready = true;
 					message.channel.send('Recording finished');
 				});
 
 			}
 			else if (message.content === 'test') {
-				this.pool.getConnection()
+				await this.pool.getConnection()
 					.then (conn => {
 						conn.query('USE dva');
 						return conn.query('SELECT * FROM last_seen');
@@ -163,11 +182,43 @@ class DiscordHandler extends DiscordHandlerGeneric {
 
 		// Function that runs once at startup.
 		this.client.once('ready', () => {
-			console.log('Discord Bot Ready!');
+			// console.log('Discord Bot Ready!');
+			this.connected = true;
 		});
 
-		// Log the bot in.
-		this.client.login(this.token);
+	}
+
+	async login() {
+		class Login_error extends Error {}
+		try {
+			const start = Date.now();
+			await super.login();
+			// Log the bot in.
+			await this.client.login(this.token);
+			while (!this.connected) {
+				const now = Date.now();
+				if (now - start > this.LOGIN_TIMEOUT) {
+					throw new Login_error('login timer exceeded');
+				}
+			}
+			return true;
+		}
+		catch (error) {
+			console.log(error);
+			return false;
+		}
+	}
+
+	async logout() {
+		try {
+			await super.logout();
+			await this.client.destroy();
+			return true;
+		}
+		catch (error) {
+			console.log(error);
+			return false;
+		}
 	}
 
 }
@@ -178,7 +229,7 @@ class DiscordHandler extends DiscordHandlerGeneric {
 // eslint-disable-next-line no-unused-vars
 class DiscordHandlerTest extends DiscordHandlerGeneric {
 	constructor() {
-		super();
+		super(30000);
 	}
 
 

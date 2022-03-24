@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "jest"
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "keywords": [
     "Discord",
@@ -27,7 +27,8 @@
     "discord.js": "12.5.3",
     "dotenv": "^16.0.0",
     "libsodium-wrappers": "^0.7.9",
-    "mariadb": "^3.0.0"
+    "mariadb": "^3.0.0",
+    "google-auth-library": "^7.14.0"
   },
   "devDependencies": {
     "eslint": "^8.9.0",
