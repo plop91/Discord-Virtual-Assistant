@@ -1,9 +1,22 @@
 # Discord-Virtual-Assistant
+![javascript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![Mariadb](https://img.shields.io/badge/MariaDB-4EA94B?style=for-the-badge&logo=mariadb&logoColor=white)
+![Markdown](https://img.shields.io/badge/Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white)
+
+
+![Maintained](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
+![Licence](https://img.shields.io/github/license/plop91/Discord-Virtual-Assistant.svg)
+![Website](https://img.shields.io/website-up-down-green-red/https/plop91.github.io/Discord-Virtual-Assistant/)
+![Website](https://img.shields.io/github/downloads/plop91/Discord-Virtual-Assistant/total.svg)
+
 ## Authors
-* Ian Sodersjerna - @plop91
-* Jacob Austin - @jacob-austin
-* Jonathan Tucker - @JTucker2000
-* Nick Miceli - @nickmiceli4
+| author                                            | link                                                                                                         |
+|---------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| [Ian Sodersjerna](https://github.com/plop91)      | ![Follow](https://img.shields.io/github/followers/plop91.svg?style=social&label=Follow&maxAge=2592000)       |
+| [Jacob Austin](https://github.com/jacob-austin)   | ![Follow](https://img.shields.io/github/followers/jacob-austin.svg?style=social&label=Follow&maxAge=2592000) |
+| [Jonathan Tucker](https://github.com/JTucker2000) | ![Follow](https://img.shields.io/github/followers/JTucker2000.svg?style=social&label=Follow&maxAge=2592000)  |
+| [Nick Miceli](https://github.com/nickmiceli4)     | ![Follow](https://img.shields.io/github/followers/nickmiceli4.svg?style=social&label=Follow&maxAge=2592000)  |
 
 ## Instructions
 
