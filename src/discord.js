@@ -6,6 +6,8 @@
  @Description: Interface with discord API
 
  @Changelog:
+ 3/25/2022 IS: create on_message function.
+ 3/24/2022 IS: add play function
  3/19/2022 IS: Upgrade to async functions, update token env name to DISCORD_TOKEN
  3/16/2022 IS: Update database to mariaDB
  2/08/2022 IS: Add sqlite3 database with temp test function.
@@ -24,7 +26,7 @@ require('dotenv').config();
 class DiscordHandlerGeneric {
 
 	/**
-	 * Generic constructor, used to set discord token, prepare the audio queue, and create a mariadb pool to access database.
+	 * Generic constructor, used to set discord token, prepare the audio queue.
 	 */
 	constructor(timeout) {
 		this.LOGIN_TIMEOUT = timeout;
@@ -59,6 +61,10 @@ class DiscordHandlerGeneric {
 		return clip;
 	}
 
+	/**
+	 * create a mariadb pool to access database and check database.
+	 * @returns {Promise<void>}
+	 */
 	async login() {
 		this.pool = mariadb.createPool({
 			// process.env.TOKEN
@@ -84,6 +90,10 @@ class DiscordHandlerGeneric {
 			});
 	}
 
+	/**
+	 * Release database resources.
+	 * @returns {Promise<void>}
+	 */
 	async logout() {
 		if (this.pool) {
 			await this.pool.end();
@@ -97,8 +107,9 @@ class DiscordHandlerGeneric {
  * Discord Bot Handler class
  */
 class DiscordHandler extends DiscordHandlerGeneric {
+
 	/**
-     * Base constructor, sets up bot, on message functions and logs the bot in.
+     * Base constructor, sets up bot, and event handlers.
      */
 	constructor() {
 		super(20000);
@@ -112,72 +123,7 @@ class DiscordHandler extends DiscordHandlerGeneric {
 
 		// Message handling function.
 		this.client.on('message', async message => {
-
-			console.log(message.author.username + ': ' + message.content);
-			// If the bot sent the message we can ignore the rest.
-			if (message.author.bot) return;
-
-			this.pool.getConnection()
-				.then (conn => {
-					conn.query('USE dva');
-					return conn.query('REPLACE INTO last_seen VALUES (?, ?)', [message.author.username, message.guild.id]);
-				})
-				.then((res) => {
-					console.log(res);
-				})
-				.catch(err => {
-					console.log(err);
-				});
-
-			if (message.content === 'join') {
-				// Join the same voice channel of the author of the message
-				if (message.member.voice.channel) {
-					this.connection = await message.member.voice.channel.join();
-				}
-				else {
-					message.channel.send('You are not connected to a server');
-				}
-			}
-			else if (message.content === 'record') {
-				message.channel.send('Recording starting now');
-				if (!this.connection) {
-					if (message.member.voice.channel) {
-						this.connection = await message.member.voice.channel.join();
-					}
-					else {
-						message.channel.send('You are not connected to a server');
-						return;
-					}
-				}
-				// create a recorder object
-				const audio = this.connection.receiver.createStream(message.author, { mode: 'opus' });
-				// save audio stream, refer to https://v12.discordjs.guide/voice/receiving-audio.html#basic-usage for playback information
-				if (!fs.existsSync('recordings')) {
-					fs.mkdirSync('recordings');
-				}
-				const writer = fs.createWriteStream('recordings/' + message.id + '.ogg');
-				audio.pipe(writer);
-				await writer.on('finish', () => {
-					// this.connection.play(fs.createReadStream('recordings/' + message.id + '.ogg'), { type: 'ogg/opus' });
-					this.audio_queue.push('recordings/' + message.id + '.ogg');
-					this.audio_ready = true;
-					message.channel.send('Recording finished');
-				});
-
-			}
-			else if (message.content === 'test') {
-				await this.pool.getConnection()
-					.then (conn => {
-						conn.query('USE dva');
-						return conn.query('SELECT * FROM last_seen');
-					})
-					.then((res) => {
-						console.log(res);
-					})
-					.catch(err => {
-						console.log(err);
-					});
-			}
+			await this.on_message(message);
 		});
 
 		// Function that runs once at startup.
@@ -188,6 +134,111 @@ class DiscordHandler extends DiscordHandlerGeneric {
 
 	}
 
+	/**
+	 * Function that handles a message event.
+	 *
+	 * @param message message object.
+	 * @returns {Promise<void>}
+	 */
+	async on_message(message) {
+
+		console.log(message.author.username + ': ' + message.content);
+		// If the bot sent the message we can ignore the rest.
+		if (message.author.bot) return;
+
+		this.pool.getConnection()
+			.then (conn => {
+				conn.query('USE dva');
+				return conn.query('REPLACE INTO last_seen VALUES (?, ?)', [message.author.username, message.guild.id]);
+			})
+			.then((res) => {
+				console.log(res);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+
+		if (message.content === 'join') {
+			// Join the same voice channel of the author of the message
+			if (message.member.voice.channel) {
+				this.connection = await message.member.voice.channel.join();
+			}
+			else {
+				message.channel.send('You are not connected to a server');
+			}
+		}
+		else if (message.content.startsWith('play')) {
+			const args = message.content.split(' ');
+
+			if (!args.length > 1) {
+				await message.channel.send('must provide an argument');
+				return;
+			}
+
+			if (!fs.existsSync('responce.mp3')) {
+				return;
+			}
+			// const dispatcher = this.connection.play('responce.mp3');
+			const dispatcher = this.connection.play(fs.createReadStream('recordings/957639346616406076.ogg'), { type: 'ogg/opus' });
+
+			dispatcher.on('start', () => {
+				console.log('audio.mp3 is now playing!');
+			});
+
+			dispatcher.on('finish', () => {
+				console.log('audio.mp3 has finished playing!');
+			});
+
+			// Always remember to handle errors appropriately!
+			dispatcher.on('error', console.error);
+		}
+		else if (message.content === 'record') {
+			message.channel.send('Recording starting now');
+			if (!this.connection) {
+				if (message.member.voice.channel) {
+					this.connection = await message.member.voice.channel.join();
+				}
+				else {
+					message.channel.send('You are not connected to a server');
+					return;
+				}
+			}
+			// create a recorder object
+			const audio = this.connection.receiver.createStream(message.author, { mode: 'pcm' });
+			// save audio stream, refer to https://v12.discordjs.guide/voice/receiving-audio.html#basic-usage for playback information
+			if (!fs.existsSync('recordings')) {
+				fs.mkdirSync('recordings');
+			}
+			const writer = fs.createWriteStream('recordings/' + message.id + '.pcm');
+			audio.pipe(writer);
+			await writer.on('finish', () => {
+				// this.connection.play(fs.createReadStream('recordings/' + message.id + '.ogg'), { type: 'ogg/opus' });
+				this.audio_queue.push('recordings/' + message.id + '.pcm');
+				this.audio_ready = true;
+				message.channel.send('Recording finished');
+			});
+
+		}
+		else if (message.content === 'test') {
+			await this.pool.getConnection()
+				.then (conn => {
+					conn.query('USE dva');
+					return conn.query('SELECT * FROM last_seen');
+				})
+				.then((res) => {
+					console.log(res);
+				})
+				.catch(err => {
+					console.log(err);
+				});
+		}
+	}
+
+	/**
+	 * Log the bot into the discord api and setup resources.
+	 *
+	 * @returns {Promise<boolean>}
+	 */
 	async login() {
 		class Login_error extends Error {}
 		try {
@@ -195,12 +246,12 @@ class DiscordHandler extends DiscordHandlerGeneric {
 			await super.login();
 			// Log the bot in.
 			await this.client.login(this.token);
-			while (!this.connected) {
-				const now = Date.now();
-				if (now - start > this.LOGIN_TIMEOUT) {
-					throw new Login_error('login timer exceeded');
-				}
-			}
+			// while (!this.connected) {
+			// const now = Date.now();
+			// if (now - start > this.LOGIN_TIMEOUT) {
+			// 	throw new Login_error('login timer exceeded');
+			// }
+			// }
 			return true;
 		}
 		catch (error) {
@@ -209,6 +260,11 @@ class DiscordHandler extends DiscordHandlerGeneric {
 		}
 	}
 
+	/**
+	 * Log the bot out of the discord api and release resources.
+	 *
+	 * @returns {Promise<boolean>}
+	 */
 	async logout() {
 		try {
 			await super.logout();
@@ -221,6 +277,22 @@ class DiscordHandler extends DiscordHandlerGeneric {
 		}
 	}
 
+	/**
+	 * Play an audio file through the voice connection.
+	 *
+	 * @param filename
+	 * @returns {Promise<void>}
+	 */
+	async play(filename) {
+		try {
+			if (this.connection) {
+				this.connection.play(filename);
+			}
+		}
+		catch (e) {
+			console.log(e);
+		}
+	}
 }
 
 /**
@@ -228,6 +300,9 @@ class DiscordHandler extends DiscordHandlerGeneric {
  */
 // eslint-disable-next-line no-unused-vars
 class DiscordHandlerTest extends DiscordHandlerGeneric {
+	/**
+	 *
+	 */
 	constructor() {
 		super(30000);
 	}

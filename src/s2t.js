@@ -6,6 +6,7 @@
  @Description:  Interface with Speech-to-Text API
 
  @Changelog:
+ 3/27/2022 IS: Changed encoding to WAV and added channel count and separate channel recognition to support dual channel audio.
  3/21/2022 JT: finished first working version
  3/20/2022 JT: changed encoding to OGG_OPUS
  3/14/2022 JT: added Google Speech-To-Text and began work on transcription
@@ -28,7 +29,7 @@ class S2T {
     }
 
     /**
-	 * Function takes in a path to an audio file in OGG_OPUS format and uses
+	 * Function takes in a path to an audio file in WAV format and uses
      * Google's speech-to-text API to create a transcript. The transcript
      * is then returned as a string.
 	 * @param filepath: the path to the audio file
@@ -36,15 +37,13 @@ class S2T {
 	 */
     async transcribe(filepath) {
         // Set up information for transcription request.
-        const encoding = 'OGG_OPUS';
-        const sampleRateHertz = 48000;
         const languageCode = 'en-US';
 
         const config = {
-            encoding: encoding,
-            sampleRateHertz: sampleRateHertz,
-            languageCode: languageCode
-        };
+            languageCode: languageCode,
+			audioChannelCount: 2,
+			enableSeparateRecognitionPerChannel: true,
+		};
 
         const audio = {
             content: fs.readFileSync(filepath).toString('base64')
@@ -54,7 +53,7 @@ class S2T {
             config: config,
             audio: audio
         };
-          
+
         // Send request and receive response.
         const [operation] = await this.s2tClient.longRunningRecognize(request);
         const [response] = await operation.promise();

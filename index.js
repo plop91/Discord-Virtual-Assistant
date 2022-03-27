@@ -6,17 +6,21 @@
  @Description: Main file for program.
 
  @Changelog:
- 3/19/2022 IS:Convert main loop into async function and add sleep function.
- 2/25/2022 IS:Added import statement for config file and import for environmental variables as needed.
- 2/19/2022 IS:Added import statements and basic operation.
+ 3/19/2022 IS: Add audio conversion with ffmpeg.
+ 3/19/2022 IS: Convert main loop into async function and add sleep function.
+ 2/25/2022 IS: Added import statement for config file and import for environmental variables as needed.
+ 2/19/2022 IS: Added import statements and basic operation.
  */
 const DiscordHandler = require('./src/discord');
 const Parser = require('./src/parser');
 const S2T = require('./src/s2t');
+const T2S = require('./src/t2s');
+const { execSync } = require('child_process');
 
 const discordclient = new DiscordHandler();
 const parser = new Parser(discordclient);
 const speech2text = new S2T();
+const text2speech = new T2S();
 
 /**
  * Helper function, sleeps for x ms.
@@ -28,20 +32,38 @@ function sleep(ms) {
 	});
 }
 
+function convert_audio(audio) {
+
+	const new_filename = audio.slice(0, -4) + '.wav';
+	console.log('audio conversion has started');
+	const command = 'ffmpeg -f s16le -ar 48k -ac 2 -i ' + audio + ' ' + new_filename;
+	console.log(command);
+	execSync(command);
+	console.log('audio conversion has ended');
+	return new_filename;
+}
 
 discordclient.login().then(async () => {
-	let cont = true;
+	const cont = true;
 	while (cont) {
 		// if the discord client has audio ready to process
-		if (discordclient.audio_ready) {
+		if (discordclient.audio_status) {
+			let audio = await discordclient.audio_clip;
+			await sleep(1);
+			audio = convert_audio(audio);
+
 			// transcribe the audio using the speech to text module
-			const transcript = await speech2text.transcribe(discordclient.audio_clip);
+			const transcript = await speech2text.transcribe(audio);
+
+			console.log('Transcript:' + transcript);
+
 			// Parse the transcript and preform actions
 			const status = parser.parse(transcript);
 
-			if (!status) {
-				cont = false;
-			}
+			await text2speech.convert(status);
+
+			discordclient.play('response.mp3');
+
 		}
 		await sleep(100);
 	}
