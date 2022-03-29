@@ -25,7 +25,7 @@ test('S2T constructor', () => {
 test('S2T "Hey Discord bot"', async () => {
     const speech2text = new S2T();
     const result = await speech2text.transcribe("./tests/resources/s2tTestAudio1.wav");
-    expect(result).toBe("hey Discord bot");
+    expect(result).toEqual("hey Discord bot");
 });
 
 test('S2T "Whats the weather like today"', async () => {
