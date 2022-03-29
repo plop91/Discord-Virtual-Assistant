@@ -6,6 +6,7 @@
  @Description: Responsible for parsing user input
 
  @Changelog:
+ 3/29/2022 JA: Added a function to parse the text and return the command
  3/16/2022 JA: Added shell functionality for testing
  2/19/2022 IS: Added basic structure
  */
@@ -29,18 +30,37 @@ class Parser extends ParserGeneric {
 		// if first word is 'discord' then strip from string
 		if (text.toLowerCase().startsWith('discord')) {
 			text = text.substring(8);
-		}
-
-		// TODO: implement checking if text is an included command
-
-		// basic shell for testing, only covers one case
-		if (text.toLowerCase() === 'what time is it') {
-			this.text2speech.convert('It is ' + new Date().toLocaleTimeString());
-			return 'time found';
+			// check next word for possible commands
+			const sentence = text.split(' ');
+			switch (sentence[0].toLowerCase()) {
+			case 'play':
+				this.discord.play(sentence[1]);
+				break;
+			case 'time':
+				this.text2speech.convert(new Date().toLocaleTimeString());
+				this.discord.play('response.mp3');
+				break;
+			case 'weather':
+				this.text2speech.convert('Feature coming soon!');
+				this.discord.play('response.mp3');
+				break;
+			case 'ban':
+				// const user = sentence[1];
+				// this.discord.ban(user);
+				this.text2speech.convert('Feature coming soon!');
+				this.discord.play('response.mp3');
+				break;
+			case 'dm':
+				// const user = sentence[1];
+				// const message = sentence[2:];
+				// this.discord.dm(user, message);
+				this.text2speech.convert('Feature coming soon!');
+				this.discord.play('response.mp3');
+				break;
+			}
 		}
 		return 'no command found';
 	}
-
 }
 class ParserTest extends ParserGeneric {
 	constructor(discord) {
