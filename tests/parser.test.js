@@ -21,11 +21,39 @@ test('Discord constructor', () => {
 	expect(parser).toBeDefined();
 });
 
-test('Test default command parsing', () => {
+test('Test parsing time command', () => {
 	const discordClient = new DiscordHandler();
 	const parser = new Parser(discordClient);
-	const result = parser.parse('discord what time is it');
-	expect(result).toBe('time found');
+	const result = parser.parse('discord time');
+	expect(result).toBe('Stated time');
+});
+
+test('Test parsing play command', () => {
+	const discordClient = new DiscordHandler();
+	const parser = new Parser(discordClient);
+	const result = parser.parse('discord play response.mp3');
+	expect(result).toBe('Played file');
+});
+
+test('Test parsing weather command', () => {
+	const discordClient = new DiscordHandler();
+	const parser = new Parser(discordClient);
+	const result = parser.parse('discord weather');
+	expect(result).toBe('Stated weather');
+});
+
+test('Test parsing ban command', () => {
+	const discordClient = new DiscordHandler();
+	const parser = new Parser(discordClient);
+	const result = parser.parse('discord time');
+	expect(result).toBe('Banned user');
+});
+
+test('Test parsing dm command', () => {
+	const discordClient = new DiscordHandler();
+	const parser = new Parser(discordClient);
+	const result = parser.parse('discord time');
+	expect(result).toBe('DMed user');
 });
 
 test('Test no command found', () => {
