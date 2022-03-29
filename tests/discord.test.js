@@ -56,32 +56,56 @@ describe('Base Discord', () => {
 		// eslint-disable-next-line no-undef
 		expect(discord.audio_queue.length).toEqual(0);
 	});
+
+	// eslint-disable-next-line no-undef
+	test('Discord audio_queue dequeue first item in queue', async () => {
+		discord.audio_queue.push('test1');
+		discord.audio_queue.push('test2');
+		discord.audio_queue.push('test3');
+		// eslint-disable-next-line no-undef
+		expect(discord.audio_clip).toEqual('test1');
+		// eslint-disable-next-line no-undef
+		expect(discord.audio_clip).toEqual('test2');
+		// eslint-disable-next-line no-undef
+		expect(discord.audio_clip).toEqual('test3');
+	});
+	// eslint-disable-next-line no-undef
+	test('discord token environmental variable', async () => {
+		// eslint-disable-next-line no-undef
+		expect(discord.token).toBeDefined();
+	});
+
 });
 
-// // eslint-disable-next-line no-undef
+// eslint-disable-next-line no-undef
 // describe('login/logout discord', () => {
+//
+// 	let discord = null;
+//
+// 	async function setup() {
+// 		discord = new DiscordHandler();
+// 	}
+//
+// 	// eslint-disable-next-line no-undef
+// 	beforeEach(async () => {
+// 		await setup();
+// 	});
 //
 //
 // 	// eslint-disable-next-line no-undef
 // 	test('Discord login', async () => {
-// 		const discordclient = new DiscordHandler();
-// 		// eslint-disable-next-line no-undef
-// 		expect(discordclient).toBeDefined();
-// 		const status = await discordclient.login();
+// 		const status = await discord.login();
+// 		await sleep(100);
 // 		// eslint-disable-next-line no-undef
 // 		expect(status).toBeTruthy();
+// 		await discord.logout();
 // 	});
 //
 // 	// eslint-disable-next-line no-undef
 // 	test('Discord logout', async () => {
-// 		const discordclient = new DiscordHandler();
-// 		// eslint-disable-next-line no-undef
-// 		expect(discordclient).toBeDefined();
-// 		await discordclient.login();
-//
-// 		// eslint-disable-next-line no-undef
-// 		expect(discordclient).toBeDefined();
-// 		const status = await discordclient.logout();
+// 		await discord.login();
+// 		await sleep(100);
+// 		const status = await discord.logout();
 // 		// eslint-disable-next-line no-undef
 // 		expect(status).toBeTruthy();
 // 	});
