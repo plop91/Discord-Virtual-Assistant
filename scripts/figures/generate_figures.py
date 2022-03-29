@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import os
+
 """
  @Project: Discord Virtual Assistant
  @Title: generate_figures.py
@@ -51,18 +52,23 @@ while len(dates) > 0:
 
     usage_per_day.append((d0, count))
 
+usage_per_day.sort()
+
 day, usage = zip(*usage_per_day)
 
 dict = {"date": day, "usage": usage}
 
-plt.plot(day, usage)
+plt.bar(day, usage)
 plt.xlabel('Days')
+plt.xticks(rotation='vertical')
 
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%Y'))
 plt.gca().xaxis.set_major_locator(mdates.DayLocator())
 
 plt.ylabel('Usage')
 
+plt.autoscale()
+plt.subplots_adjust(bottom=0.25)
+
 plt.savefig("record_usage_figure.png")
 plt.show()
-
