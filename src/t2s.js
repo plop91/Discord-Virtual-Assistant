@@ -51,7 +51,7 @@ class T2S {
 		const [response] = await this.t2sClient.synthesizeSpeech(request);
 		const writeFile = util.promisify(fs.writeFile);
 		// Remember the audio content before converting to .MP3 (for testing)
-		this.lastAudioContent = response.audioContent;
+		this.lastAudioContent = response.audioContent.toString('hex');
 		// Write file and return promise so the file can we 'awaited'
 		return await writeFile(fileToWrite, response.audioContent, 'binary');
 	}
