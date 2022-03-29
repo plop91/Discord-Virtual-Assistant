@@ -60,9 +60,8 @@ class S2T {
 
         // Return the transcription.
         const transcription = response.results
-            .map(result => result.alternatives[0].transcript)
-            .join('\n');
-        return transcription;
+            .map(result => result.alternatives[0].transcript);
+        return transcription[0];
     }
 }
 

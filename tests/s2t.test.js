@@ -31,11 +31,11 @@ test('S2T "Hey Discord bot"', async () => {
 test('S2T "Whats the weather like today"', async () => {
     const speech2text = new S2T();
     const result = await speech2text.transcribe("./tests/resources/s2tTestAudio2.wav");
-    expect(result).toBe("what's the weather like today");
+    expect(result).toEqual("what's the weather like today");
 });
 
 test('S2T "What time is the basketball game today"', async () => {
     const speech2text = new S2T();
     const result = await speech2text.transcribe("./tests/resources/s2tTestAudio3.wav");
-    expect(result).toBe("what time is the basketball game today");
+    expect(result).toEqual("what time is the basketball game today");
 });
