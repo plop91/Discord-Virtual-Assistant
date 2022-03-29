@@ -45,14 +45,14 @@ test('Test parsing weather command', () => {
 test('Test parsing ban command', () => {
 	const discordClient = new DiscordHandler();
 	const parser = new Parser(discordClient);
-	const result = parser.parse('discord time');
+	const result = parser.parse('discord ban');
 	expect(result).toBe('Banned user');
 });
 
 test('Test parsing dm command', () => {
 	const discordClient = new DiscordHandler();
 	const parser = new Parser(discordClient);
-	const result = parser.parse('discord time');
+	const result = parser.parse('discord dm');
 	expect(result).toBe('DMed user');
 });
 
