@@ -35,28 +35,28 @@ class Parser extends ParserGeneric {
 			switch (sentence[0].toLowerCase()) {
 			case 'play':
 				this.discord.play(sentence[1]);
-				break;
+				return 'Played file';
 			case 'time':
 				this.text2speech.convert(new Date().toLocaleTimeString());
 				this.discord.play('response.mp3');
-				break;
+				return 'Stated time';
 			case 'weather':
 				this.text2speech.convert('Feature coming soon!');
 				this.discord.play('response.mp3');
-				break;
+				return 'Stated weather';
 			case 'ban':
 				// const user = sentence[1];
 				// this.discord.ban(user);
 				this.text2speech.convert('Feature coming soon!');
 				this.discord.play('response.mp3');
-				break;
+				return 'Banned user';
 			case 'dm':
 				// const user = sentence[1];
 				// const message = sentence[2:];
 				// this.discord.dm(user, message);
 				this.text2speech.convert('Feature coming soon!');
 				this.discord.play('response.mp3');
-				break;
+				return 'DMed user';
 			}
 		}
 		return 'no command found';

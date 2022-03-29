@@ -17,14 +17,14 @@ const S2T = require('./src/s2t');
 const T2S = require('./src/t2s');
 const { execSync } = require('child_process');
 
-const discordclient = new DiscordHandler();
-const parser = new Parser(discordclient);
+const discord_client = new DiscordHandler();
+const parser = new Parser(discord_client);
 const speech2text = new S2T();
 const text2speech = new T2S();
 
 /**
  * Helper function, sleeps for x ms.
- * @param ms miliseconds to sleep
+ * @param ms milliseconds to sleep
  */
 function sleep(ms) {
 	return new Promise((resolve) => {
@@ -43,12 +43,12 @@ function convert_audio(audio) {
 	return new_filename;
 }
 
-discordclient.login().then(async () => {
+discord_client.login().then(async () => {
 	const cont = true;
 	while (cont) {
 		// if the discord client has audio ready to process
-		if (discordclient.audio_status) {
-			let audio = await discordclient.audio_clip;
+		if (discord_client.audio_status) {
+			let audio = await discord_client.audio_clip;
 			await sleep(1);
 			audio = convert_audio(audio);
 
@@ -62,12 +62,11 @@ discordclient.login().then(async () => {
 
 			await text2speech.convert(status);
 
-			discordclient.play('response.mp3');
-
+			await discord_client.play('response.mp3');
 		}
 		await sleep(100);
 	}
 },
 ).finally(() => {
-	discordclient.logout().then(() => console.log('Bot shutdown successfully'));
+	discord_client.logout().then(() => console.log('Bot shutdown successfully'));
 });

@@ -6,6 +6,7 @@
  @Description: Unit testing for Speech-to-Text interface.
 
  @Changelog:
+ 3/29/2022 JT:Added more tests
  3/29/2022 JT:Changed tests to wav format
  3/21/2022 JT:Added await to some tests
  3/20/2022 JT:Changed tests to opus format
@@ -38,4 +39,22 @@ test('S2T "What time is the basketball game today"', async () => {
     const speech2text = new S2T();
     const result = await speech2text.transcribe("./tests/resources/s2tTestAudio3.wav");
     expect(result).toEqual("what time is the basketball game today");
+});
+
+test('S2T "What restaurants are near me"', async () => {
+    const speech2text = new S2T();
+    const result = await speech2text.transcribe("./tests/resources/s2tTestAudio4.wav");
+    expect(result).toEqual("what restaurants are near me");
+});
+
+test('S2T "Hey Discord bot, play some music"', async () => {
+    const speech2text = new S2T();
+    const result = await speech2text.transcribe("./tests/resources/s2tTestAudio5.wav");
+    expect(result).toEqual("hey Discord bot play some music");
+});
+
+test('S2T "Hey Discord bot, are there any sporting events near me today"', async () => {
+    const speech2text = new S2T();
+    const result = await speech2text.transcribe("./tests/resources/s2tTestAudio6.wav");
+    expect(result).toEqual("hey Discord bot are there any sporting events near me today");
 });

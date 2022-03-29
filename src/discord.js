@@ -28,17 +28,13 @@ class DiscordHandlerGeneric {
 	/**
 	 * Generic constructor, used to set discord token, prepare the audio queue.
 	 */
-	constructor(timeout) {
-		this.LOGIN_TIMEOUT = timeout;
-
+	constructor() {
 		// Discord token
 		this.token = process.env.DISCORD_TOKEN;
 
 		// Voice recording.
 		this.audio_ready = false;
 		this.audio_queue = [];
-
-
 	}
 
 	/**
@@ -88,11 +84,10 @@ class DiscordHandlerGeneric {
 					return conn.release();
 				}
 				catch (e) {
-					console.log(e);
 					return false;
 				}
 			});
-		if (success) {
+		if (success !== false) {
 			console.log('INFO:Database creation complete');
 		}
 	}
@@ -119,14 +114,12 @@ class DiscordHandler extends DiscordHandlerGeneric {
      * Base constructor, sets up bot, and event handlers.
      */
 	constructor() {
-		super(20000);
+		super();
 		// Discord API client object.
 		this.client = new Discord.Client();
 
 		// Voice connection defaulted to null indicating bot is not connected to voice.
 		this.connection = null;
-
-		this.connected = false;
 
 		// Message handling function.
 		this.client.on('message', async message => {
@@ -135,8 +128,7 @@ class DiscordHandler extends DiscordHandlerGeneric {
 
 		// Function that runs once at startup.
 		this.client.once('ready', () => {
-			// console.log('Discord Bot Ready!');
-			this.connected = true;
+			console.log('INFO:Discord Bot Ready!');
 		});
 
 	}
@@ -174,17 +166,27 @@ class DiscordHandler extends DiscordHandlerGeneric {
 		}
 	}
 
+	/**
+	 * Function called when 'join' message is sent
+	 * @param message message that called this function
+	 * @returns {Promise<void>}
+	 */
 	async on_join(message) {
 		// Join the same voice channel of the author of the message
 		if (message.member.voice.channel) {
 			this.connection = await message.member.voice.channel.join();
 		}
 		else {
-			message.channel.send('You are not connected to a server');
+			await message.channel.send('You are not connected to a server');
 		}
 
 	}
 
+	/**
+	 * Function called when 'play' message is sent
+	 * @param message message that called this function
+	 * @returns {Promise<void>}
+	 */
 	async on_play(message) {
 		const args = message.content.split(' ');
 
@@ -200,11 +202,11 @@ class DiscordHandler extends DiscordHandlerGeneric {
 		// const dispatcher = this.connection.play(fs.createReadStream('recordings/957639346616406076.ogg'), { type: 'ogg/opus' });
 
 		dispatcher.on('start', () => {
-			console.log('audio.mp3 is now playing!');
+			console.log('INFO:audio.mp3 is now playing!');
 		});
 
 		dispatcher.on('finish', () => {
-			console.log('audio.mp3 has finished playing!');
+			console.log('INFO:audio.mp3 has finished playing!');
 		});
 
 		// Always remember to handle errors appropriately!
@@ -212,6 +214,11 @@ class DiscordHandler extends DiscordHandlerGeneric {
 
 	}
 
+	/**
+	 * Function called when 'record' message is sent
+	 * @param message message that called this function
+	 * @returns {Promise<void>}
+	 */
 	async on_record(message) {
 		await this.pool.getConnection()
 			.then (conn => {
@@ -246,6 +253,11 @@ class DiscordHandler extends DiscordHandlerGeneric {
 		});
 	}
 
+	/**
+	 * Function called when 'record' message is sent
+	 * @param message message that called this function
+	 * @returns {Promise<void>}
+	 */
 	async on_test(message) {
 		const res = await this.pool.getConnection()
 			.then (conn => {
@@ -254,7 +266,7 @@ class DiscordHandler extends DiscordHandlerGeneric {
 				conn.release();
 				return q_res;
 			});
-		console.log(res);
+		console.log('INFO:' + res);
 		await message.channel.send(res.toString());
 	}
 
@@ -264,22 +276,13 @@ class DiscordHandler extends DiscordHandlerGeneric {
 	 * @returns {Promise<boolean>}
 	 */
 	async login() {
-		class Login_error extends Error {}
 		try {
-			const start = Date.now();
 			await super.login();
-			// Log the bot in.
 			await this.client.login(this.token);
-			// while (!this.connected) {
-			// const now = Date.now();
-			// if (now - start > this.LOGIN_TIMEOUT) {
-			// 	throw new Login_error('login timer exceeded');
-			// }
-			// }
 			return true;
 		}
 		catch (error) {
-			console.log(error);
+			console.log('ERROR:' + error);
 			return false;
 		}
 	}
@@ -297,7 +300,7 @@ class DiscordHandler extends DiscordHandlerGeneric {
 			return true;
 		}
 		catch (error) {
-			console.log(error);
+			console.log('ERROR:' + error);
 			return false;
 		}
 	}
@@ -315,7 +318,7 @@ class DiscordHandler extends DiscordHandlerGeneric {
 			}
 		}
 		catch (e) {
-			console.log(e);
+			console.log('ERROR:' + e);
 		}
 	}
 }
@@ -329,7 +332,7 @@ class DiscordHandlerTest extends DiscordHandlerGeneric {
 	 *
 	 */
 	constructor() {
-		super(30000);
+		super();
 	}
 
 
