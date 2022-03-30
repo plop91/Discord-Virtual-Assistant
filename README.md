@@ -69,7 +69,7 @@ export DVA_DATABASE_PASSWORD=password
 
 ```
 export CLIENT_EMAIL=ClientEmail
-export PRIVATE_KEY=PrivateKey
+export PRIVATE_KEY='PrivateKey'
 ```
 
 ### Usage:
