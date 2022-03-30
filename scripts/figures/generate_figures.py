@@ -56,8 +56,6 @@ usage_per_day.sort()
 
 day, usage = zip(*usage_per_day)
 
-dict = {"date": day, "usage": usage}
-
 plt.bar(day, usage)
 plt.xlabel('Days')
 plt.xticks(rotation='vertical')
@@ -71,4 +69,40 @@ plt.autoscale()
 plt.subplots_adjust(bottom=0.25)
 
 plt.savefig("record_usage_figure.png")
+plt.show()
+
+cur.execute("SELECT command FROM command_usage")
+
+commands = []
+for command in cur:
+    commands.append(command[0])
+commands.sort()
+
+commands_usage = []
+while len(commands) > 0:
+    count = 0
+    c0 = commands[0]
+
+    # count occurrences of d0
+    for d in commands:
+        if d == c0:
+            count += 1
+
+    # remove all occurrences of d0
+    commands = [i for i in commands if i != c0]
+
+    commands_usage.append((c0, count))
+
+command, usage = zip(*commands_usage)
+
+plt.bar(command, usage)
+plt.xlabel('command')
+
+
+plt.ylabel('Usage')
+
+plt.autoscale()
+# plt.subplots_adjust(bottom=0.25)
+
+plt.savefig("command_usage_figure.png")
 plt.show()

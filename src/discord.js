@@ -81,6 +81,8 @@ class DiscordHandlerGeneric {
 					conn.query('CREATE TABLE IF NOT EXISTS last_seen (username CHAR(100) PRIMARY KEY, server CHAR(20))');
 					// create record_usage
 					conn.query('CREATE TABLE IF NOT EXISTS record_usage (time DATETIME)');
+					// create command usage
+					conn.query('CREATE TABLE IF NOT EXISTS command_usage (command CHAR(100))');
 					return conn.release();
 				}
 				catch (e) {
@@ -262,11 +264,12 @@ class DiscordHandler extends DiscordHandlerGeneric {
 		const res = await this.pool.getConnection()
 			.then (conn => {
 				conn.query('USE dva');
-				const q_res = conn.query('SELECT * FROM record_usage');
+				const q_res = conn.query('SELECT * FROM command_usage');
 				conn.release();
 				return q_res;
 			});
-		console.log('INFO:' + res);
+		console.log('INFO:');
+		console.log(res);
 		await message.channel.send(res.toString());
 	}
 

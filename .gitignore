@@ -139,3 +139,4 @@ config.json
 recordings/
 GoogleServiceAccount.json
 token.txt
+scripts/figures/*.png
