@@ -30,6 +30,7 @@ Discord Virtual Assistant requires several external components to install and ru
 * if you do not have ffmpeg it can be installed from [their website](https://ffmpeg.org/download.html)
 * if you do not have mariadb installed follow [these instructions](https://mariadb.com/get-started-with-mariadb/) or contact databases@sodersjerna.com for access to existing database. 
 * instructions for creating a discord bot token can be found [here](https://www.writebots.com/discord-bot-token/)
+* instructions for getting a Google Cloud service account authentication JSON can be found [here](https://cloud.google.com/docs/authentication/production) under "Creating a Service Account"
 
 
 1. Download code to "DISCORD\_VIRTUAL\_ASSISTANT\_DIR" (replace "DISCORD\_VIRTUAL\_ASSISTANT\_DIR" with desired folder name)
@@ -63,6 +64,12 @@ export DISCORD_TOKEN=YOUR_DISCORD_TOKEN # commands may vary per operating system
 export DVA_DATABASE_HOST=hostname/ip
 export DVA_DATABASE_USER=username
 export DVA_DATABASE_PASSWORD=password
+```
+6. Set your Google Cloud service account credentials as an environmental variable. Open your service account JSON file and copy the fields named 'client_email' and 'private_key'. Use single quotes around the private key to account for spaces.
+
+```
+export CLIENT_EMAIL=ClientEmail
+export PRIVATE_KEY=PrivateKey
 ```
 
 ### Usage:
