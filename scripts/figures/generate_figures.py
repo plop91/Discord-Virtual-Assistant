@@ -57,6 +57,7 @@ usage_per_day.sort()
 day, usage = zip(*usage_per_day)
 
 plt.bar(day, usage)
+plt.title("record command usage")
 plt.xlabel('Days')
 plt.xticks(rotation='vertical')
 
@@ -96,6 +97,7 @@ while len(commands) > 0:
 command, usage = zip(*commands_usage)
 
 plt.bar(command, usage)
+plt.title("voice command usage")
 plt.xlabel('command')
 
 

@@ -57,6 +57,11 @@ class Parser extends ParserGeneric {
 				this.text2speech.convert('Feature coming soon!');
 				this.discord.play('response.mp3');
 				return 'DMed user';
+			case 'echo':
+				sentence.shift();
+				this.text2speech.convert(sentence.join(' '));
+				this.discord.play('response.mp3');
+				return 'echoed command';
 			}
 		}
 		return 'no command found';

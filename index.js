@@ -11,6 +11,7 @@
  2/25/2022 IS: Added import statement for config file and import for environmental variables as needed.
  2/19/2022 IS: Added import statements and basic operation.
  */
+// Discord handler
 const DiscordHandler = require('./src/discord');
 const Parser = require('./src/parser');
 const S2T = require('./src/s2t');
@@ -24,7 +25,7 @@ const text2speech = new T2S();
 
 /**
  * Helper function, sleeps for x ms.
- * @param ms milliseconds to sleep
+ * @param ms {int} Milliseconds to sleep
  */
 function sleep(ms) {
 	return new Promise((resolve) => {
@@ -32,6 +33,11 @@ function sleep(ms) {
 	});
 }
 
+/**
+ * Use ffmpeg to convert audio from signed-16 bit, little endian, 48000hz, 2 channel audio to WAV
+ * @param audio {string} File name of audio file
+ * @returns {string} New audio filename
+ */
 function convert_audio(audio) {
 	const new_filename = audio.slice(0, -4) + '.wav';
 	console.log('audio conversion has started');
@@ -60,7 +66,7 @@ discord_client.login().then(async () => {
 			// Parse the transcript and preform actions
 			const status = parser.parse(transcript);
 
-			let test;
+			let test = 'none';
 			switch (status) {
 			case 'Played file':
 				test = 'play';
@@ -80,6 +86,9 @@ discord_client.login().then(async () => {
 			case 'no command found':
 				test = 'none';
 				break;
+			case 'echoed command':
+				test = 'echo';
+				break;
 			}
 
 			await discord_client.pool.getConnection()
@@ -89,7 +98,7 @@ discord_client.login().then(async () => {
 					return conn.release();
 				});
 
-			await text2speech.convert(status);
+			// await text2speech.convert(status);
 
 			await discord_client.play('response.mp3');
 		}
